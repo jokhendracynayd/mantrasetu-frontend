@@ -36,6 +36,7 @@ import ServicesAnalyticsPage from './pages/ServicesAnalyticsPage';
 // Other Pages
 import CartPage from './pages/CartPage';
 import UserProfilePage from './pages/UserProfilePage';
+import ServiceEnrollmentPage from './pages/ServiceEnrollmentPage';
 
 // Components
 import Layout from './components/Layout/Layout';
@@ -130,6 +131,14 @@ function App() {
         <ProtectedRoute>
           <Layout>
             <UserProfilePage />
+          </Layout>
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/service-enrollment" element={
+        <ProtectedRoute>
+          <Layout>
+            <ServiceEnrollmentPage />
           </Layout>
         </ProtectedRoute>
       } />

@@ -165,6 +165,19 @@ export const userAPI = {
     api.get('/users/notifications', { params }),
     
   deleteAccount: () => api.delete('/users/account'),
+  
+  // Service Enrollment APIs
+  getEnrolledServices: () => api.get('/users/enrolled-services'),
+  
+  enrollInService: (serviceData: {
+    serviceId: string;
+    preferences?: any;
+  }) => api.post('/users/enroll-service', serviceData),
+  
+  unenrollFromService: (enrollmentId: string) =>
+    api.delete(`/users/enrollments/${enrollmentId}`),
+    
+  getEnrollmentHistory: () => api.get('/users/enrollment-history'),
 };
 
 // Booking API
@@ -268,6 +281,7 @@ export const paymentAPI = {
     amount: number;
     currency: string;
     paymentMethod: string;
+    paymentGateway: string;
   }) => api.post('/payments', paymentData),
     
   processPayment: (paymentId: string, paymentData: any) =>

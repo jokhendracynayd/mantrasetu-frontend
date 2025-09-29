@@ -9,7 +9,8 @@ const SpiritualJourneySection: React.FC = () => {
       id: 1,
       title: 'Book Your First Puja',
       description: 'Connect with verified pandits for authentic spiritual ceremonies',
-      icon: '🕉️',
+      icon: 'ॐ',
+      vedicSymbol: 'lotus',
       link: '/services',
       image: 'https://via.placeholder.com/200x200/ff6b35/ffffff?text=Meditation'
     },
@@ -17,7 +18,8 @@ const SpiritualJourneySection: React.FC = () => {
       id: 2,
       title: 'Vedic Mantra Chants',
       description: 'Learn and practice sacred mantras for spiritual growth',
-      icon: '🔔',
+      icon: '🕉️',
+      vedicSymbol: 'bell',
       link: '/services',
       image: 'https://via.placeholder.com/200x200/ff6b35/ffffff?text=Om'
     },
@@ -25,7 +27,8 @@ const SpiritualJourneySection: React.FC = () => {
       id: 3,
       title: 'Customized Astrology Reading',
       description: 'Get personalized astrological guidance from expert astrologers',
-      icon: '⭐',
+      icon: '☸️',
+      vedicSymbol: 'chakra',
       link: '/services',
       image: 'https://via.placeholder.com/200x200/ff6b35/ffffff?text=Stars'
     },
@@ -33,7 +36,8 @@ const SpiritualJourneySection: React.FC = () => {
       id: 4,
       title: 'Personalized Mythology Tales',
       description: 'Discover divine stories and spiritual wisdom',
-      icon: '📖',
+      icon: '📿',
+      vedicSymbol: 'mala',
       link: '/services',
       image: 'https://via.placeholder.com/200x200/ff6b35/ffffff?text=Stories'
     }
@@ -91,7 +95,28 @@ const SpiritualJourneySection: React.FC = () => {
 
 const SectionContainer = styled.section`
   padding: ${({ theme }) => theme.spacing[20]} 0;
-  background: ${({ theme }) => theme.colors.backgroundSecondary};
+  background: 
+    radial-gradient(circle at 10% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(34, 139, 34, 0.05) 0%, transparent 50%),
+    ${({ theme }) => theme.colors.backgroundSecondary};
+  position: relative;
+  
+  /* Vedic Mandala Pattern */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(circle at 20% 20%, rgba(255, 107, 53, 0.1) 1px, transparent 1px),
+      radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.1) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+    opacity: 0.3;
+    pointer-events: none;
+  }
 
   @media (max-width: 768px) {
     padding: ${({ theme }) => theme.spacing[16]} 0;
@@ -120,7 +145,11 @@ const SectionHeader = styled.div`
 const SectionTitle = styled.h2`
   font-size: ${({ theme }) => theme.fontSizes['4xl']};
   font-weight: ${({ theme }) => theme.fontWeights.bold};
-  color: ${({ theme }) => theme.colors.textPrimary};
+  color: ${({ theme }) => theme.colors.deepRed};
+  font-family: 'Playfair Display', 'Times New Roman', serif;
+  text-shadow: 1px 1px 2px rgba(255, 215, 0, 0.3);
+  position: relative;
+  z-index: 1;
 
   @media (max-width: 768px) {
     font-size: ${({ theme }) => theme.fontSizes['3xl']};
@@ -230,13 +259,17 @@ const ServiceContent = styled.div`
 const ServiceIcon = styled.div`
   font-size: ${({ theme }) => theme.fontSizes['3xl']};
   margin-bottom: ${({ theme }) => theme.spacing[3]};
+  font-family: 'Noto Sans Devanagari', serif;
+  text-shadow: 1px 1px 2px rgba(255, 215, 0, 0.5);
+  filter: drop-shadow(0 0 5px rgba(255, 107, 53, 0.3));
 `;
 
 const ServiceTitle = styled.h3`
   font-size: ${({ theme }) => theme.fontSizes.lg};
   font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  color: ${({ theme }) => theme.colors.textPrimary};
+  color: ${({ theme }) => theme.colors.deepRed};
   margin-bottom: ${({ theme }) => theme.spacing[2]};
+  font-family: 'Playfair Display', 'Times New Roman', serif;
 `;
 
 const ServiceDescription = styled.p`

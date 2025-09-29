@@ -58,9 +58,15 @@ const HomePage: React.FC = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
         style={{
-          background: 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)',
+          background: 
+            'radial-gradient(circle at 20% 20%, rgba(255, 107, 53, 0.03) 0%, transparent 50%),' +
+            'radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),' +
+            'radial-gradient(circle at 40% 60%, rgba(34, 139, 34, 0.02) 0%, transparent 50%),' +
+            'linear-gradient(135deg, #FFFEF7 0%, #FFF8DC 100%)',
           minHeight: '100vh',
-          width: '100%'
+          width: '100%',
+          position: 'relative',
+          zIndex: 1
         }}
       >
         <HeroSection heroContent={data!.hero} />
@@ -78,11 +84,32 @@ const HomePage: React.FC = () => {
 
 const HomePageContainer = styled.div`
   width: 100%;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-  background-image: 
-    radial-gradient(circle at 25% 25%, rgba(255, 107, 53, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(255, 107, 53, 0.05) 0%, transparent 50%);
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(255, 107, 53, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 40% 60%, rgba(34, 139, 34, 0.02) 0%, transparent 50%),
+    linear-gradient(135deg, #FFFEF7 0%, #FFF8DC 100%);
   min-height: 100vh;
+  position: relative;
+  
+  /* Vedic Mandala Background */
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(circle at 10% 10%, rgba(255, 107, 53, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 90% 90%, rgba(255, 215, 0, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 50% 50%, rgba(34, 139, 34, 0.01) 1px, transparent 1px);
+    background-size: 100px 100px, 150px 150px, 200px 200px;
+    background-position: 0 0, 50px 50px, 100px 100px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
 `;
 
 const LoadingContainer = styled.div`

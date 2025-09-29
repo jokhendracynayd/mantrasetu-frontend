@@ -115,7 +115,8 @@ export const useHomepageData = (): UseHomepageDataReturn => {
       setData(homepageData);
     } catch (err: any) {
       console.error('Error fetching homepage data:', err);
-      setError(err.response?.data?.message || 'Failed to load homepage content');
+      const errorMessage = err?.response?.data?.message || err?.message || 'Failed to load homepage content';
+      setError(typeof errorMessage === 'string' ? errorMessage : 'Failed to load homepage content');
       
       // Set fallback data on error
       setData({

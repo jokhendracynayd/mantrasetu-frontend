@@ -116,6 +116,7 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
               <>
                 {/* Regular user and pandit navigation */}
                 <NavLink to="/bookings">My Bookings</NavLink>
+               
                 
                 {/* Pandit-specific navigation */}
                 {isPandit() && (
@@ -294,6 +295,9 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
                   <>
                     <MobileNavLink to="/bookings" onClick={() => setIsMenuOpen(false)}>
                       My Bookings
+                    </MobileNavLink>
+                    <MobileNavLink to="/service-enrollment" onClick={() => setIsMenuOpen(false)}>
+                      Enroll in Services
                     </MobileNavLink>
                     
                     {/* Pandit-specific navigation */}

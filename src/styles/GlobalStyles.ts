@@ -16,7 +16,11 @@ export const GlobalStyles = createGlobalStyle`
 
   #root {
     min-height: 100vh;
-    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    background: 
+      radial-gradient(circle at 20% 20%, rgba(255, 107, 53, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 40% 60%, rgba(34, 139, 34, 0.02) 0%, transparent 50%),
+      linear-gradient(135deg, #FFFEF7 0%, #FFF8DC 100%);
     background-attachment: fixed;
   }
 
@@ -26,7 +30,11 @@ export const GlobalStyles = createGlobalStyle`
       sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    background: 
+      radial-gradient(circle at 20% 20%, rgba(255, 107, 53, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 40% 60%, rgba(34, 139, 34, 0.02) 0%, transparent 50%),
+      linear-gradient(135deg, #FFFEF7 0%, #FFF8DC 100%);
     background-attachment: fixed;
     color: #333333;
     line-height: 1.6;
@@ -102,11 +110,24 @@ export const GlobalStyles = createGlobalStyle`
     height: auto;
   }
 
-  /* Typography */
+  /* Vedic Typography */
   h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
     line-height: 1.2;
     margin-bottom: 0.5rem;
+    font-family: 'Playfair Display', 'Times New Roman', serif;
+  }
+  
+  /* Sanskrit text styling */
+  .sanskrit {
+    font-family: 'Noto Sans Devanagari', 'Sanskrit Text', serif;
+    font-weight: 500;
+  }
+  
+  .vedic-title {
+    font-family: 'Playfair Display', 'Times New Roman', serif;
+    color: #8B0000;
+    text-shadow: 1px 1px 2px rgba(255, 215, 0, 0.3);
   }
 
   h1 {

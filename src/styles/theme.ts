@@ -1,14 +1,29 @@
 export const theme = {
   colors: {
-    primary: '#ff6b35',
-    primaryDark: '#e55a2b',
-    primaryLight: '#ff8a65',
-    secondary: '#ffd700',
-    secondaryDark: '#ffb300',
+    // Vedic Primary Colors
+    primary: '#FF6B35', // Saffron Orange - Sacred fire color
+    primaryDark: '#E55A2B',
+    primaryLight: '#FF8A65',
     
-    // Neutral colors
-    white: '#ffffff',
-    black: '#000000',
+    // Vedic Secondary Colors
+    secondary: '#FFD700', // Sacred Gold
+    secondaryDark: '#FFB300',
+    secondaryLight: '#FFF8DC',
+    
+    // Vedic Sacred Colors
+    saffron: '#FF6B35', // Sacred fire and purity
+    gold: '#FFD700', // Divine illumination
+    deepRed: '#8B0000', // Sacred earth and strength
+    sacredGreen: '#228B22', // Nature and prosperity
+    sacredBlue: '#4169E1', // Divine consciousness
+    sacredPurple: '#4B0082', // Spiritual wisdom
+    
+    // Vedic Neutral Colors
+    white: '#FFFFFF', // Purity and peace
+    black: '#000000', // The void and potential
+    cream: '#FFF8DC', // Sacred offerings
+    warmWhite: '#FFFEF7', // Blessed white
+    softGray: '#F5F5DC', // Gentle earth tone
     gray50: '#fafafa',
     gray100: '#f5f5f5',
     gray200: '#eeeeee',
@@ -26,10 +41,12 @@ export const theme = {
     error: '#f44336',
     info: '#2196f3',
     
-    // Background colors
-    background: '#ffffff',
-    backgroundSecondary: '#f8f9fa',
+    // Vedic Background colors
+    background: '#FFFEF7', // Warm blessed white
+    backgroundSecondary: '#FFF8DC', // Sacred cream
     backgroundDark: '#1a1a1a',
+    backgroundSacred: '#FFF5EE', // Sacred light
+    backgroundAltar: '#FDF5E6', // Altar cloth color
     
     // Text colors
     textPrimary: '#333333',
@@ -46,6 +63,9 @@ export const theme = {
   fonts: {
     primary: "'Inter', sans-serif",
     secondary: "'Poppins', sans-serif",
+    sanskrit: "'Noto Sans Devanagari', 'Sanskrit Text', serif",
+    vedic: "'Noto Serif Devanagari', 'Sanskrit Text', serif",
+    decorative: "'Playfair Display', 'Times New Roman', serif",
   } as const,
   
   fontSizes: {

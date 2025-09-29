@@ -110,12 +110,13 @@ const BookingForm: React.FC<BookingFormProps> = ({
 
   const calculateTotalAmount = () => {
     if (selectedPandit) {
-      const hourlyRate = selectedPandit.hourlyRate || 0;
+      const hourlyRate = Number(selectedPandit.hourlyRate) || 0; // Ensure it's a number
       const serviceDuration = 2.5; // Default 2.5 hours for most services
-      const total = servicePrice + (hourlyRate * serviceDuration);
-      setTotalAmount(total);
+      const panditFee = hourlyRate * serviceDuration;
+      const total = Number(servicePrice) + panditFee; // Ensure servicePrice is also a number
+      setTotalAmount(Math.round(total));
     } else {
-      setTotalAmount(servicePrice);
+      setTotalAmount(Number(servicePrice));
     }
   };
 
@@ -158,14 +159,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
       const createdBookingId = bookingResponse.data.id;
       setBookingId(createdBookingId);
 
-      // Create payment
-      const paymentResponse = await paymentAPI.createPayment({
-        bookingId: createdBookingId,
-        amount: totalAmount,
-        currency: 'INR',
-        paymentMethod: paymentMethod,
-      });
-
+      // Don't create payment here - wait until user clicks "Pay"
       setStep(4);
     } catch (error: any) {
       console.error('Booking failed:', error);
@@ -185,7 +179,8 @@ const BookingForm: React.FC<BookingFormProps> = ({
         bookingId: bookingId || '',
         amount: totalAmount,
         currency: 'INR',
-        paymentMethod: paymentMethod,
+        paymentMethod: paymentMethod.toUpperCase(), // Convert to enum value
+        paymentGateway: 'razorpay', // Add required paymentGateway field
       });
 
       const { razorpayOrderId, razorpayKeyId } = paymentResponse.data;

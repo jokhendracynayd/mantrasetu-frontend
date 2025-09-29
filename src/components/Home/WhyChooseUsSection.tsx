@@ -87,7 +87,31 @@ const WhyChooseUsSection: React.FC = () => {
 
 const SectionContainer = styled.section`
   padding: ${({ theme }) => theme.spacing[20]} 0;
-  background: ${({ theme }) => theme.colors.white};
+  background: 
+    radial-gradient(circle at 50% 0%, rgba(255, 107, 53, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 50% 100%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+    ${({ theme }) => theme.colors.white};
+  position: relative;
+  
+  /* Sacred Swastika Pattern */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    background-image: 
+      linear-gradient(45deg, rgba(255, 107, 53, 0.1) 25%, transparent 25%),
+      linear-gradient(-45deg, rgba(255, 107, 53, 0.1) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, rgba(255, 215, 0, 0.1) 75%),
+      linear-gradient(-45deg, transparent 75%, rgba(255, 215, 0, 0.1) 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    opacity: 0.3;
+    pointer-events: none;
+  }
 
   @media (max-width: 768px) {
     padding: ${({ theme }) => theme.spacing[16]} 0;
@@ -108,7 +132,11 @@ const SectionHeader = styled.div`
 const SectionTitle = styled.h2`
   font-size: ${({ theme }) => theme.fontSizes['4xl']};
   font-weight: ${({ theme }) => theme.fontWeights.bold};
-  color: ${({ theme }) => theme.colors.textPrimary};
+  color: ${({ theme }) => theme.colors.deepRed};
+  font-family: 'Playfair Display', 'Times New Roman', serif;
+  text-shadow: 1px 1px 2px rgba(255, 215, 0, 0.3);
+  position: relative;
+  z-index: 1;
 
   @media (max-width: 768px) {
     font-size: ${({ theme }) => theme.fontSizes['3xl']};
@@ -128,16 +156,43 @@ const FeaturesGrid = styled.div`
 
 const FeatureCard = styled.div`
   background: ${({ theme }) => theme.colors.white};
-  border: 1px solid ${({ theme }) => theme.colors.gray200};
+  border: 2px solid ${({ theme }) => theme.colors.gray200};
   border-radius: ${({ theme }) => theme.borderRadius['2xl']};
   padding: ${({ theme }) => theme.spacing[8]};
   text-align: center;
   transition: all ${({ theme }) => theme.transitions.normal};
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+
+  /* Vedic Border Pattern */
+  &::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: ${({ theme }) => theme.borderRadius['2xl']};
+    background: linear-gradient(45deg, 
+      ${({ theme }) => theme.colors.saffron} 0%, 
+      ${({ theme }) => theme.colors.gold} 25%, 
+      ${({ theme }) => theme.colors.sacredGreen} 50%, 
+      ${({ theme }) => theme.colors.sacredBlue} 75%, 
+      ${({ theme }) => theme.colors.saffron} 100%);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity ${({ theme }) => theme.transitions.normal};
+  }
 
   &:hover {
     transform: translateY(-4px);
     box-shadow: ${({ theme }) => theme.shadows.lg};
     border-color: ${({ theme }) => theme.colors.primary};
+    
+    &::before {
+      opacity: 0.3;
+    }
   }
 `;
 
@@ -146,13 +201,24 @@ const TempleIcon = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing[4]};
   display: flex;
   justify-content: center;
+  filter: drop-shadow(0 0 5px rgba(255, 107, 53, 0.3));
+  
+  svg {
+    transition: all ${({ theme }) => theme.transitions.normal};
+  }
+  
+  &:hover svg {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+  }
 `;
 
 const FeatureTitle = styled.h3`
   font-size: ${({ theme }) => theme.fontSizes.xl};
   font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  color: ${({ theme }) => theme.colors.textPrimary};
+  color: ${({ theme }) => theme.colors.deepRed};
   margin-bottom: ${({ theme }) => theme.spacing[4]};
+  font-family: 'Playfair Display', 'Times New Roman', serif;
 `;
 
 const FeatureDescription = styled.p`

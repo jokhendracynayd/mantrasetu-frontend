@@ -236,6 +236,32 @@ export interface BookingForm {
   specialInstructions?: string;
 }
 
+// Service Enrollment types
+export interface ServiceEnrollment {
+  id: string;
+  userId: string;
+  serviceId: string;
+  service: Service;
+  enrolledAt: string;
+  status: 'active' | 'completed' | 'cancelled';
+  preferences?: any;
+  progress?: {
+    completedBookings: number;
+    totalBookings: number;
+    lastActivity?: string;
+  };
+}
+
+export interface EnrollmentForm {
+  serviceId: string;
+  preferences?: {
+    preferredLanguage?: string;
+    preferredTimeSlot?: string;
+    virtualOrInPerson?: 'virtual' | 'in-person' | 'both';
+    specialRequirements?: string;
+  };
+}
+
 // Filter types
 export interface PanditFilters {
   serviceId?: string;

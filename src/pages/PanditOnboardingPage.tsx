@@ -250,7 +250,7 @@ const PanditOnboardingPage: React.FC = () => {
       const response = await panditAPI.registerPandit(formData);
       
       if (response.data) {
-        toast.success('Pandit registration successful! Your profile is under review. Please login to continue.');
+        toast.success('Registration successful! Please wait while we verify your details. You will receive an email confirmation once your profile is approved.');
         navigate('/login');
       }
     } catch (error: any) {
