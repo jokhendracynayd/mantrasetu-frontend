@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: mantrasetu-frontend-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_URL=${REACT_APP_API_URL:-https://api.mantrasetu.com/api/v1}
+      - REACT_APP_APP_NAME=${REACT_APP_APP_NAME:-MantraSetu}
+      - REACT_APP_ENABLE_DEBUG=true
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+      - DISABLE_ESLINT_PLUGIN=true
+    restart: unless-stopped
+    networks:
+      - frontend-network
+    stdin_open: true
+    tty: true
+
+networks:
+  frontend-network:
+    driver: bridge
+

@@ -7,6 +7,7 @@ import { paymentService, RazorpayResponse } from '../../services/payment';
 import Button from '../UI/Button';
 import Input from '../UI/Input';
 import LoadingSpinner from '../UI/LoadingSpinner';
+import { getPanditPlaceholder } from '../../utils/placeholder';
 
 interface BookingFormProps {
   serviceId: string;
@@ -259,7 +260,7 @@ const BookingForm: React.FC<BookingFormProps> = ({
             >
               <PanditImage>
                 <img
-                  src={pandit.user.profileImageUrl || `https://via.placeholder.com/80x80/ff6b35/ffffff?text=${pandit.user.firstName.charAt(0)}`}
+                  src={pandit.user.profileImageUrl || getPanditPlaceholder(pandit.user.firstName)}
                   alt={`${pandit.user.firstName} ${pandit.user.lastName}`}
                 />
               </PanditImage>

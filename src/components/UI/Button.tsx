@@ -31,6 +31,15 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   const Component = as || 'button';
   
+  // Filter out non-DOM props to prevent React warnings
+  const {
+    fullWidth: _fullWidth,
+    variant: _variant,
+    size: _size,
+    loading: _loading,
+    ...domProps
+  } = props as any;
+  
   return (
     <StyledButton
       as={Component}
@@ -42,7 +51,7 @@ const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
       className={className}
       to={to}
-      {...props}
+      {...domProps}
     >
       {loading && <LoadingSpinner size="small" />}
       {children}
@@ -50,7 +59,9 @@ const Button: React.FC<ButtonProps> = ({
   );
 };
 
-const StyledButton = styled.button<{
+const StyledButton = styled.button.withConfig({
+  shouldForwardProp: (prop) => !['variant', 'size', 'fullWidth'].includes(prop),
+})<{
   variant: string;
   size: string;
   fullWidth: boolean;

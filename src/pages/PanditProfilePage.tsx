@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 
 import Button from '../components/UI/Button';
 import LoadingSpinner from '../components/UI/LoadingSpinner';
+import { generatePlaceholderImage, getPanditPlaceholder } from '../utils/placeholder';
 
 interface PanditProfile {
   id: string;
@@ -66,9 +67,9 @@ const PanditProfilePage: React.FC = () => {
               phone: '+91 XXXXX XXXXX', // Masked for privacy
               address: '123, Anywhere, City Anycity', // Placeholder
               gallery: [
-                'https://via.placeholder.com/200x150/ff6b35/ffffff?text=Puja+1',
-                'https://via.placeholder.com/200x150/ff6b35/ffffff?text=Puja+2',
-                'https://via.placeholder.com/200x150/ff6b35/ffffff?text=Puja+3'
+                generatePlaceholderImage(200, 150, 'Puja 1'),
+                generatePlaceholderImage(200, 150, 'Puja 2'),
+                generatePlaceholderImage(200, 150, 'Puja 3')
               ],
               reviews: [
                 {
@@ -142,7 +143,7 @@ const PanditProfilePage: React.FC = () => {
           <ProfileHeader>
             <ProfileImage>
               <img 
-                src={pandit.image || `https://via.placeholder.com/200x200/ff6b35/ffffff?text=${pandit.name.charAt(0)}`} 
+                src={pandit.image || getPanditPlaceholder(pandit.name)} 
                 alt={pandit.name} 
               />
             </ProfileImage>

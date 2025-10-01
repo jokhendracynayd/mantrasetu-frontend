@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react';
 import { panditAPI, serviceAPI } from '../services/api';
 import type { HomepageContent, PanditCard, ServiceCard, HomepageStats } from '../types/homepage';
+import { getPanditPlaceholder, getServicePlaceholder } from '../utils/placeholder';
+
+// Type declaration for process.env
+declare const process: {
+  env: {
+    REACT_APP_API_URL?: string;
+  };
+};
 
 // Add homepage API to the services
 const homepageAPI = {
@@ -76,7 +84,7 @@ export const useHomepageData = (): UseHomepageDataReturn => {
         experience: `${pandit.experienceYears}+ years`,
         specializations: pandit.specialization || [],
         languages: pandit.languagesSpoken || [],
-        image: pandit.user.profileImageUrl || `https://via.placeholder.com/150x150/ff6b35/ffffff?text=${pandit.user.firstName.charAt(0)}`,
+        image: pandit.user.profileImageUrl || getPanditPlaceholder(pandit.user.firstName),
         hourlyRate: parseFloat(pandit.hourlyRate) || 0,
         bio: pandit.bio || '',
         isVerified: pandit.isVerified || false
@@ -87,7 +95,7 @@ export const useHomepageData = (): UseHomepageDataReturn => {
         id: service.id,
         name: service.name,
         description: service.description || '',
-        image: service.imageUrl || `https://via.placeholder.com/200x200/ff6b35/ffffff?text=${service.name.substring(0, 2)}`,
+        image: service.imageUrl || getServicePlaceholder(service.name),
         link: `/services/${service.id}`,
         category: service.category,
         basePrice: parseFloat(service.basePrice) || 0,
