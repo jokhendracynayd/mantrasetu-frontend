@@ -39,6 +39,7 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
   const isAdmin = () => {
     return getUserRole() === 'ADMIN' || getUserRole() === 'SUPER_ADMIN';
   };
+  
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
