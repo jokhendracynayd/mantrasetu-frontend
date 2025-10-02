@@ -4,7 +4,6 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider } from 'styled-components';
-
 import App from './App';
 import { store } from './store/store';
 import GlobalStyles from './styles/GlobalStyles';
