@@ -28,6 +28,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
   const [isFocused, setIsFocused] = useState(false);
 
   const inputType = type === 'password' && isPasswordVisible ? 'text' : type;
+  
+  // Filter out non-DOM props to prevent React warnings
+  const {
+    fullWidth: _fullWidth,
+    variant: _variant,
+    size: _size,
+    ...domProps
+  } = props as any;
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     setIsFocused(true);
@@ -74,7 +82,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
         <StyledInput
           ref={ref}
           type={inputType}
-          {...props}
+          {...domProps}
           onFocus={handleFocus}
           onBlur={handleBlur}
           hasIcon={!!icon}
@@ -99,7 +107,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({
 
 Input.displayName = 'Input';
 
-const InputContainer = styled.div<{ fullWidth: boolean }>`
+const InputContainer = styled.div.withConfig({
+  shouldForwardProp: (prop) => !['fullWidth'].includes(prop),
+})<{ fullWidth: boolean }>`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing[2]};
@@ -112,7 +122,9 @@ const Label = styled.label`
   color: ${({ theme }) => theme.colors.textPrimary};
 `;
 
-const InputWrapper = styled.div<{
+const InputWrapper = styled.div.withConfig({
+  shouldForwardProp: (prop) => !['variant', 'size', 'isFocused', 'hasError', 'fullWidth'].includes(prop),
+})<{
   variant: string;
   size: string;
   isFocused: boolean;

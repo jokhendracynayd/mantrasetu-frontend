@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
 import type { ServiceCard } from '../../types/homepage';
+import { getServicePlaceholder } from '../../utils/placeholder';
 
 interface SpecialPujasSectionProps {
   services?: ServiceCard[];
@@ -47,7 +48,7 @@ const SpecialPujasSection: React.FC<SpecialPujasSectionProps> = ({
                   </OrnamentalBorder>
                   
                   <PujaImage>
-                    <img src={service.image || `https://via.placeholder.com/200x200/ff6b35/ffffff?text=${service.name.substring(0, 2)}`} alt={service.name} />
+                    <img src={service.image || getServicePlaceholder(service.name)} alt={service.name} />
                   </PujaImage>
                   
                   <PujaContent>

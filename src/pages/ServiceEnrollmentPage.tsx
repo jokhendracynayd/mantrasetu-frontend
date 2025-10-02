@@ -8,6 +8,7 @@ import { serviceAPI, userAPI } from '../services/api';
 import { Service, ServiceEnrollment, EnrollmentForm } from '../types';
 import Button from '../components/UI/Button';
 import LoadingSpinner from '../components/UI/LoadingSpinner';
+import { getLargeServicePlaceholder } from '../utils/placeholder';
 
 const ServiceEnrollmentPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -199,7 +200,7 @@ const ServiceEnrollmentPage: React.FC = () => {
                 <EnrolledCard key={enrollment.id}>
                   <EnrolledImage>
                     {enrollment.service.imageUrl ? (
-                      <img src={enrollment.service.imageUrl || `https://via.placeholder.com/400x200/ff6b35/ffffff?text=${enrollment.service.name.charAt(0)}`} alt={enrollment.service.name} />
+                      <img src={enrollment.service.imageUrl || getLargeServicePlaceholder(enrollment.service.name)} alt={enrollment.service.name} />
                     ) : (
                       <ServiceIcon>{getServiceIcon(enrollment.service.category)}</ServiceIcon>
                     )}

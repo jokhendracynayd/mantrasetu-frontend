@@ -8,6 +8,7 @@ import { fetchServices, fetchAvailablePandits } from '../store/slices/bookingSli
 import { serviceAPI } from '../services/api';
 import Button from '../components/UI/Button';
 import LoadingSpinner from '../components/UI/LoadingSpinner';
+import { getLargeServicePlaceholder, getPanditPlaceholder } from '../utils/placeholder';
 
 // Dummy data for services
 const dummyServices: Service[] = [
@@ -23,7 +24,7 @@ const dummyServices: Service[] = [
     requiresSamagri: true,
     instructions: 'Traditional Lakshmi puja with all necessary materials.',
     isActive: true,
-    imageUrl: 'https://via.placeholder.com/400x200/ff6b35/ffffff?text=Lakshmi+Puja',
+    imageUrl: getLargeServicePlaceholder('Lakshmi Puja'),
     tags: ['lakshmi', 'wealth', 'prosperity', 'abundance'],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
@@ -40,7 +41,7 @@ const dummyServices: Service[] = [
     requiresSamagri: false,
     instructions: 'Please provide your birth details for accurate analysis.',
     isActive: true,
-    imageUrl: 'https://via.placeholder.com/400x200/ff6b35/ffffff?text=Astrology',
+    imageUrl: getLargeServicePlaceholder('Astrology'),
     tags: ['astrology', 'birth chart', 'predictions', 'guidance'],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
@@ -57,7 +58,7 @@ const dummyServices: Service[] = [
     requiresSamagri: true,
     instructions: 'Please provide the house address and preferred date.',
     isActive: true,
-    imageUrl: 'https://via.placeholder.com/400x200/ff6b35/ffffff?text=Griha+Pravesh',
+    imageUrl: getLargeServicePlaceholder('Griha Pravesh'),
     tags: ['housewarming', 'vastu', 'prosperity', 'new home'],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
@@ -74,7 +75,7 @@ const dummyServices: Service[] = [
     requiresSamagri: false,
     instructions: 'Virtual session will be conducted via video call.',
     isActive: true,
-    imageUrl: 'https://via.placeholder.com/400x200/ff6b35/ffffff?text=Mantra+Chanting',
+    imageUrl: getLargeServicePlaceholder('Mantra Chanting'),
     tags: ['mantra', 'chanting', 'spiritual', 'virtual'],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
@@ -91,7 +92,7 @@ const dummyServices: Service[] = [
     requiresSamagri: true,
     instructions: 'Please specify if you want to perform at temple or home.',
     isActive: true,
-    imageUrl: 'https://via.placeholder.com/400x200/ff6b35/ffffff?text=Rudrabhishek',
+    imageUrl: getLargeServicePlaceholder('Rudrabhishek'),
     tags: ['shiva', 'obstacles', 'strength', 'success'],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
@@ -108,7 +109,7 @@ const dummyServices: Service[] = [
     requiresSamagri: false,
     instructions: 'Please provide your birth details for comprehensive analysis.',
     isActive: true,
-    imageUrl: 'https://via.placeholder.com/400x200/ff6b35/ffffff?text=Kundali',
+    imageUrl: getLargeServicePlaceholder('Kundali'),
     tags: ['kundali', 'birth chart', 'analysis', 'remedies'],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
@@ -260,7 +261,7 @@ const ServicesPage: React.FC = () => {
           <PanditProfileSection>
             <PanditProfileCard>
               <PanditImage>
-                <img src={selectedPandit.image || `https://via.placeholder.com/150x150/ff6b35/ffffff?text=${selectedPandit.name.charAt(0)}`} alt={selectedPandit.name} />
+                <img src={selectedPandit.image || getPanditPlaceholder(selectedPandit.name)} alt={selectedPandit.name} />
               </PanditImage>
               <PanditDetails>
                 <PanditName>{selectedPandit.name}</PanditName>

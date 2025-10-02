@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import { generatePlaceholderImage } from '../../utils/placeholder';
 
 const SpiritualLibrarySection: React.FC = () => {
   const libraryItems = [
@@ -8,21 +9,21 @@ const SpiritualLibrarySection: React.FC = () => {
       id: 1,
       title: 'Aarti Collection',
       description: 'Introduces the divine through soulful Aartis. Experience the spiritual essence of devotion and light, a timeless tradition that brings peace, rhythm, and spiritual connection.',
-      image: 'https://via.placeholder.com/200x200/ff6b35/ffffff?text=Puja+Thali',
+      image: generatePlaceholderImage(200, 200, 'Puja Thali'),
       category: 'Devotional'
     },
     {
       id: 2,
       title: 'Chalisa Collection',
       description: 'A Chalisa is a set of 40 devotional verses dedicated to a deity. Chanting a Chalisa is a powerful spiritual practice that connects the heart to the divine.',
-      image: 'https://via.placeholder.com/200x200/ff6b35/ffffff?text=Krishna',
+      image: generatePlaceholderImage(200, 200, 'Krishna'),
       category: 'Sacred Texts'
     },
     {
       id: 3,
       title: 'Mantra Repository',
       description: 'Mantras are sacred chants that harness divine energy. Explore a vast collection of mantras for peace, wisdom, healing, and spiritual growth.',
-      image: 'https://via.placeholder.com/200x200/ff6b35/ffffff?text=Om',
+      image: generatePlaceholderImage(200, 200, 'Om'),
       category: 'Spiritual Practice'
     }
   ];

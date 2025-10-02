@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import { generatePlaceholderImage } from '../../utils/placeholder';
 
 const SpiritualJourneySection: React.FC = () => {
   const services = [
@@ -12,7 +13,7 @@ const SpiritualJourneySection: React.FC = () => {
       icon: 'ॐ',
       vedicSymbol: 'lotus',
       link: '/services',
-      image: 'https://via.placeholder.com/200x200/ff6b35/ffffff?text=Meditation'
+      image: generatePlaceholderImage(200, 200, 'Meditation')
     },
     {
       id: 2,
@@ -21,7 +22,7 @@ const SpiritualJourneySection: React.FC = () => {
       icon: '🕉️',
       vedicSymbol: 'bell',
       link: '/services',
-      image: 'https://via.placeholder.com/200x200/ff6b35/ffffff?text=Om'
+      image: generatePlaceholderImage(200, 200, 'Om')
     },
     {
       id: 3,
@@ -30,7 +31,7 @@ const SpiritualJourneySection: React.FC = () => {
       icon: '☸️',
       vedicSymbol: 'chakra',
       link: '/services',
-      image: 'https://via.placeholder.com/200x200/ff6b35/ffffff?text=Stars'
+      image: generatePlaceholderImage(200, 200, 'Stars')
     },
     {
       id: 4,
@@ -39,7 +40,7 @@ const SpiritualJourneySection: React.FC = () => {
       icon: '📿',
       vedicSymbol: 'mala',
       link: '/services',
-      image: 'https://via.placeholder.com/200x200/ff6b35/ffffff?text=Stories'
+      image: generatePlaceholderImage(200, 200, 'Stories')
     }
   ];
 

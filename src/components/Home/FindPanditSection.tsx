@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 
 import Button from '../UI/Button';
 import type { PanditCard } from '../../types/homepage';
+import { getPanditPlaceholder } from '../../utils/placeholder';
 
 interface FindPanditSectionProps {
   pandits?: PanditCard[];
@@ -58,7 +59,7 @@ const FindPanditSection: React.FC<FindPanditSectionProps> = ({
                   </TempleIcon>
 
                   <PanditImage>
-                    <img src={pandit.image || `https://via.placeholder.com/150x150/ff6b35/ffffff?text=${pandit.name.charAt(0)}`} alt={pandit.name} />
+                    <img src={pandit.image || getPanditPlaceholder(pandit.name)} alt={pandit.name} />
                   </PanditImage>
 
                   <PanditInfo>
