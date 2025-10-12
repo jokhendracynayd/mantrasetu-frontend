@@ -1,10 +1,10 @@
-import Hero from "@/components/Hero";
-import SpiritualJourney from "@/components/SpiritualJourney";
-import SpecialPujas from "@/components/SpecialPujas";
-import Services from "@/components/Services";
-import SpiritualTools from "@/components/SpiritualTools";
-import About from "@/components/About";
-import Contact from "@/components/Contact";
+import Hero from "@/components/LP/Hero";
+import SpiritualJourney from "@/components/LP/SpiritualJourney";
+import SpecialPujas from "@/components/LP/SpecialPujas";
+import Services from "@/components/LP/Services";
+import SpiritualTools from "@/components/LP/SpiritualTools";
+import About from "@/components/LP/About";
+import Contact from "@/components/LP/Contact";
 
 export default function Home() {
   return (

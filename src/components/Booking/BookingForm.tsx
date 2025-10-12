@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import type{ RootState } from '../../store/store';
 import { bookingAPI, panditAPI, paymentAPI } from '../../services/api';
-import type { RazorpayResponse, RazorpayOptions } from "@/services/payment";
+import { type RazorpayResponse, type RazorpayOptions, paymentService } from "@/services/payment";
 import Button from '../Common/Button';
 import Input from '../Common/Input';
 import LoadingSpinner from '../Common/LoadingSpinner';
