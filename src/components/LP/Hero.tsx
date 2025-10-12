@@ -7,7 +7,7 @@ import { Button } from "../ui/button";
 export default function Hero() {
   const navigate = useNavigate();
   const handleBookService = () => {
-    navigate("/pujas");
+    navigate("/services");
   };
 
   return (

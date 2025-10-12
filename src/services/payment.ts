@@ -37,7 +37,7 @@ class PaymentService {
   private razorpayKeyId: string;
 
   constructor() {
-    this.razorpayKeyId = process.env.REACT_APP_RAZORPAY_KEY_ID || '';
+    this.razorpayKeyId = import.meta.env.REACT_APP_RAZORPAY_KEY_ID || '';
     
     // Load Razorpay script
     this.loadRazorpayScript();

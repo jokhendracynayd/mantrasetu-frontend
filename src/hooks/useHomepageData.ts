@@ -3,7 +3,7 @@ import { panditAPI, serviceAPI } from '../services/api';
 import type { HomepageContent, PanditCard, ServiceCard, HomepageStats } from '../types/homepage';
 import { getPanditPlaceholder, getServicePlaceholder } from '../utils/placeholder';
 
-// Type declaration for process.env
+// Type declaration for import.meta.env
 declare const process: {
   env: {
     REACT_APP_API_URL?: string;
