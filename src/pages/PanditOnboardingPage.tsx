@@ -23,14 +23,14 @@ interface PanditOnboardingForm {
   password: string;
   confirmPassword: string;
   acceptTerms: boolean;
-  
+  gender: 'Male' | 'Female' | 'Other';
+
   // Pandit Professional Fields
-  certificationNumber: string;
   experienceYears: number;
   specialization: string[];
   languagesSpoken: string[];
   serviceAreas: string[];
-  hourlyRate: number;
+  availability: 'Offline' | 'Online' | 'Both';
   bio: string;
   education: string;
   achievements: string[];
@@ -38,12 +38,15 @@ interface PanditOnboardingForm {
     certificate?: File | null;
     idProof?: File | null;
     photo?: File | null;
+    gallery?: File[] | null;
   };
 }
 
 const PanditOnboardingPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [gender, setGender] = useState<'Male' | 'Female' | 'Other'>('Male');
+  const [availability, setAvailability] = useState<'Offline' | 'Online' | 'Both'>('Both');
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [selectedSpecialization, setSelectedSpecialization] = useState<string[]>([]);
   const [selectedServiceAreas, setSelectedServiceAreas] = useState<string[]>([]);
@@ -52,6 +55,7 @@ const PanditOnboardingPage: React.FC = () => {
     certificate?: File | null;
     idProof?: File | null;
     photo?: File | null;
+    gallery?: File[] | null;
   }>({});
   
   const dispatch = useDispatch<AppDispatch>();
@@ -75,24 +79,25 @@ const PanditOnboardingPage: React.FC = () => {
       password: '',
       confirmPassword: '',
       acceptTerms: false,
-      
+      gender: 'Male',
       // Pandit Professional Fields
-      certificationNumber: '',
       experienceYears: 0,
       specialization: [],
       languagesSpoken: [],
       serviceAreas: [],
-      hourlyRate: 0,
+      availability: 'Both',
       bio: '',
       education: '',
       achievements: [''],
-      verificationDocuments: {},
+      verificationDocuments: {
+        gallery: [],
+      },
     },
   });
 
   const password = watch('password');
 
-  const languages = ['Hindi', 'Sanskrit', 'English', 'Tamil', 'Telugu', 'Bengali', 'Gujarati', 'Marathi', 'Kannada', 'Malayalam', 'Punjabi', 'Urdu'];
+  const languages = ['Hindi', 'Sanskrit', 'English', 'Tamil', 'Telugu', 'Bengali', 'Gujarati', 'Marathi', 'Kannada', 'Malayalam', 'Punjabi', 'Assamese'];
   const specializations = [
     'वैदिक अनुष्ठान (Vedic Rituals)',
     'ज्योतिष (Astrology)',
@@ -119,8 +124,12 @@ const PanditOnboardingPage: React.FC = () => {
     'Ahmedabad',
     'Jaipur',
     'Lucknow',
-    'Online Services',
-    'All India'
+    'Online Puja',
+    'PAN India',
+    'North Zone',
+    'South Zone',
+    'East Zone',
+    'West Zone'
   ];
 
   // Update form values when state changes
@@ -139,6 +148,14 @@ const PanditOnboardingPage: React.FC = () => {
   useEffect(() => {
     setValue('achievements', achievements.filter(a => a.trim() !== ''));
   }, [achievements, setValue]);
+
+  useEffect(() => {
+    setValue('gender', gender);
+  }, [gender, setValue]);
+
+  useEffect(() => {
+    setValue('availability', availability);
+  }, [availability, setValue]);
 
   const handleLanguageToggle = (language: string) => {
     const updated = selectedLanguages.includes(language)
@@ -178,13 +195,17 @@ const PanditOnboardingPage: React.FC = () => {
     }
   };
 
-  const handleFileUpload = (type: 'certificate' | 'idProof' | 'photo', event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setVerificationFiles(prev => ({
-        ...prev,
-        [type]: file
-      }));
+  const handleFileUpload = (type: 'certificate' | 'idProof' | 'photo' | 'gallery', event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    if (type === 'gallery') {
+      const fileList = Array.from(files);
+      setVerificationFiles(prev => ({ ...prev, gallery: fileList }));
+      setValue('verificationDocuments.gallery', fileList);
+    } else {
+      const file = files[0];
+      setVerificationFiles(prev => ({ ...prev, [type]: file }));
       setValue(`verificationDocuments.${type}`, file);
     }
   };
@@ -213,6 +234,14 @@ const PanditOnboardingPage: React.FC = () => {
         toast.error('Please accept the terms and conditions');
         return;
       }
+      if (!data.gender) {
+        toast.error('Please select gender');
+        return;
+      }
+      if (!data.availability) {
+        toast.error('Please select availability (Offline/Online/Both)');
+        return;
+      }
 
       const formData = new FormData();
       
@@ -223,14 +252,14 @@ const PanditOnboardingPage: React.FC = () => {
       formData.append('phone', data.phone);
       formData.append('password', data.password);
       formData.append('role', 'PANDIT'); // Set role as PANDIT
+      formData.append('gender', data.gender);
       
       // Add pandit professional fields
-      formData.append('certificationNumber', data.certificationNumber);
       formData.append('experienceYears', data.experienceYears.toString());
       formData.append('specialization', JSON.stringify(selectedSpecialization));
       formData.append('languagesSpoken', JSON.stringify(selectedLanguages));
       formData.append('serviceAreas', JSON.stringify(selectedServiceAreas));
-      formData.append('hourlyRate', data.hourlyRate.toString());
+      formData.append('availability', data.availability);
       formData.append('bio', data.bio);
       formData.append('education', data.education);
       formData.append('achievements', JSON.stringify(achievements.filter(a => a.trim() !== '')));
@@ -244,6 +273,11 @@ const PanditOnboardingPage: React.FC = () => {
       }
       if (verificationFiles.photo) {
         formData.append('photo', verificationFiles.photo);
+      }
+      if (verificationFiles.gallery && verificationFiles.gallery.length) {
+        verificationFiles.gallery.forEach((g, idx) => {
+          formData.append('gallery', g, g.name);
+        });
       }
 
       // Call pandit registration API (this will create user account and pandit profile)
@@ -377,6 +411,75 @@ const PanditOnboardingPage: React.FC = () => {
                 </InputGroup>
               </FormRow>
 
+              {/* Gender and Availability */}
+              <FormRow>
+                <InputGroup>
+                  <Label>Gender *</Label>
+                  <QualificationGrid>
+                    <QualificationOption>
+                      <RadioInput
+                        type="radio"
+                        id="gender-male"
+                        checked={gender === 'Male'}
+                        onChange={() => setGender('Male')}
+                      />
+                      <RadioLabel htmlFor="gender-male">Male</RadioLabel>
+                    </QualificationOption>
+                    <QualificationOption>
+                      <RadioInput
+                        type="radio"
+                        id="gender-female"
+                        checked={gender === 'Female'}
+                        onChange={() => setGender('Female')}
+                      />
+                      <RadioLabel htmlFor="gender-female">Female</RadioLabel>
+                    </QualificationOption>
+                    <QualificationOption>
+                      <RadioInput
+                        type="radio"
+                        id="gender-other"
+                        checked={gender === 'Other'}
+                        onChange={() => setGender('Other')}
+                      />
+                      <RadioLabel htmlFor="gender-other">Other</RadioLabel>
+                    </QualificationOption>
+                  </QualificationGrid>
+                </InputGroup>
+
+                <InputGroup>
+                  <Label>Availability *</Label>
+                  <QualificationGrid>
+                    <QualificationOption>
+                      <RadioInput
+                        type="radio"
+                        id="availability-offline"
+                        checked={availability === 'Offline'}
+                        onChange={() => setAvailability('Offline')}
+                      />
+                      <RadioLabel htmlFor="availability-offline">Offline</RadioLabel>
+                    </QualificationOption>
+                    <QualificationOption>
+                      <RadioInput
+                        type="radio"
+                        id="availability-online"
+                        checked={availability === 'Online'}
+                        onChange={() => setAvailability('Online')}
+                      />
+                      <RadioLabel htmlFor="availability-online">Online</RadioLabel>
+                    </QualificationOption>
+                    <QualificationOption>
+                      <RadioInput
+                        type="radio"
+                        id="availability-both"
+                        checked={availability === 'Both'}
+                        onChange={() => setAvailability('Both')}
+                      />
+                      <RadioLabel htmlFor="availability-both">Both</RadioLabel>
+                    </QualificationOption>
+                  </QualificationGrid>
+                </InputGroup>
+              </FormRow>
+
               {/* Terms and Conditions */}
               <InputGroup>
                 <CheckboxContainer>
@@ -399,19 +502,6 @@ const PanditOnboardingPage: React.FC = () => {
               
               <FormRow>
                 <InputGroup>
-                  <Label>प्रमाणपत्र संख्या * (Certification Number *)</Label>
-                  <Input
-                    type="text"
-                    placeholder="Enter your certification number"
-                    {...register('certificationNumber', { 
-                      required: 'Certification number is required',
-                      minLength: { value: 3, message: 'Certification number must be at least 3 characters' }
-                    })}
-                    error={errors.certificationNumber?.message}
-                  />
-                </InputGroup>
-
-                <InputGroup>
                   <Label>अनुभव (वर्ष) * (Experience in Years *)</Label>
                   <Input
                     type="number"
@@ -424,9 +514,6 @@ const PanditOnboardingPage: React.FC = () => {
                     error={errors.experienceYears?.message}
                   />
                 </InputGroup>
-              </FormRow>
-
-              <FormRow>
                 <InputGroup>
                   <Label>शिक्षा * (Education *)</Label>
                   <Input
@@ -439,24 +526,10 @@ const PanditOnboardingPage: React.FC = () => {
                     error={errors.education?.message}
                   />
                 </InputGroup>
-
-                <InputGroup>
-                  <Label>प्रति घंटा दर * (Hourly Rate *)</Label>
-                  <Input
-                    type="number"
-                    placeholder="Rate per hour in ₹"
-                    {...register('hourlyRate', { 
-                      required: 'Hourly rate is required',
-                      min: { value: 100, message: 'Minimum rate is ₹100' },
-                      max: { value: 10000, message: 'Maximum rate is ₹10,000' }
-                    })}
-                    error={errors.hourlyRate?.message}
-                  />
-                </InputGroup>
               </FormRow>
 
               {/* Languages */}
-              <SectionTitle>भाषाएँ * (Languages *)</SectionTitle>
+              <SectionTitle>भाषाएँ * (Languages Known / Speaks *)</SectionTitle>
               <LanguagesGrid>
                 {languages.map((language) => (
                   <LanguageOption key={language}>
@@ -544,7 +617,7 @@ const PanditOnboardingPage: React.FC = () => {
               <SectionTitle>प्रमाणीकरण दस्तावेज (Verification Documents)</SectionTitle>
               <DocumentsContainer>
                 <DocumentUpload>
-                  <Label>प्रमाणपत्र (Certificate)</Label>
+                  <Label>शिक्षा प्रमाणपत्र (Shiksha Pramanpatra)</Label>
                   <FileUploadSection>
                     <FileInput
                       type="file"
@@ -593,6 +666,27 @@ const PanditOnboardingPage: React.FC = () => {
                     </FileUploadLabel>
                     <UploadButton type="button" onClick={() => document.getElementById('photo')?.click()}>
                       Upload Photo
+                    </UploadButton>
+                  </FileUploadSection>
+                </DocumentUpload>
+
+                <DocumentUpload>
+                  <Label>गैलरी (Gallery)</Label>
+                  <FileUploadSection>
+                    <FileInput
+                      type="file"
+                      id="gallery"
+                      accept="image/*"
+                      multiple
+                      onChange={(e) => handleFileUpload('gallery', e)}
+                    />
+                    <FileUploadLabel htmlFor="gallery">
+                      {verificationFiles.gallery && verificationFiles.gallery.length
+                        ? `${verificationFiles.gallery.length} file(s) selected`
+                        : 'No files chosen'}
+                    </FileUploadLabel>
+                    <UploadButton type="button" onClick={() => document.getElementById('gallery')?.click()}>
+                      Upload Gallery
                     </UploadButton>
                   </FileUploadSection>
                 </DocumentUpload>

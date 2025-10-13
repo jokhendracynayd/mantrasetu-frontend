@@ -176,7 +176,7 @@ export default function Contact() {
                       <Label htmlFor="contact-phone">Phone Number</Label>
                       <Input
                         id="contact-phone"
-                        placeholder="+91 88228 82264"
+                        placeholder="+91 91234 XXXXX"
                         value={formData.phone}
                         onChange={(e) => handleInputChange("phone", e.target.value)}
                         data-testid="input-contact-phone"
