@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useSearchParams } from 'react-router-dom';
-import styled from 'styled-components';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 
 import type { RootState, AppDispatch } from '../store/store';
 import { fetchServices, fetchAvailablePandits } from '../store/slices/bookingSlice';
 import { serviceAPI } from '../services/api';
-import Button from '../components/Common/Button';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import LoadingSpinner from '../components/Common/LoadingSpinner';
 import { getLargeServicePlaceholder, getPanditPlaceholder } from '../utils/placeholder';
+import { Calendar, Clock, Sparkles, Star, Search, MapPin, Video } from 'lucide-react';
 
 // Dummy data for services
 const dummyServices: Service[] = [
@@ -136,6 +139,7 @@ interface Service {
 
 const ServicesPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const { services, isLoading, error } = useSelector((state: RootState) => state.booking);
   const [searchParams] = useSearchParams();
   const panditId = searchParams.get('panditId');
@@ -217,15 +221,8 @@ const ServicesPage: React.FC = () => {
     return matchesCategory && matchesSearch;
   });
 
-  const handleBookService = async (serviceId: string) => {
-    try {
-      // Navigate to bookings page with service ID to start booking process
-      window.location.href = `/bookings?service=${serviceId}`;
-    } catch (error) {
-      console.error('Failed to book service:', error);
-      // Still navigate to bookings page even if API fails
-      window.location.href = `/bookings?service=${serviceId}`;
-    }
+  const handleBookService = (serviceId: string) => {
+    navigate(`/bookings?service=${serviceId}`);
   };
 
   const getServiceIcon = (category: string) => {
@@ -255,615 +252,257 @@ const ServicesPage: React.FC = () => {
   };
 
   return (
-    <ServicesContainer>
-      <Container>
-        {selectedPandit ? (
-          <PanditProfileSection>
-            <PanditProfileCard>
-              <PanditImage>
-                <img src={selectedPandit.image || getPanditPlaceholder(selectedPandit.name)} alt={selectedPandit.name} />
-              </PanditImage>
-              <PanditDetails>
-                <PanditName>{selectedPandit.name}</PanditName>
-                <PanditTitle>{selectedPandit.title}</PanditTitle>
-                <RatingContainer>
-                  <Stars>
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} filled={i < Math.floor(selectedPandit.rating)}>
-                        ★
-                      </Star>
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 py-8">
+      <div className="container mx-auto px-4">
+        {/* Pandit Profile Section */}
+        {selectedPandit && (
+          <Card className="mb-8 border-primary/20">
+            <CardContent className="p-6">
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="flex-shrink-0">
+                  <img
+                    src={selectedPandit.image || getPanditPlaceholder(selectedPandit.name)}
+                    alt={selectedPandit.name}
+                    className="w-32 h-32 rounded-full object-cover border-4 border-primary/20"
+                  />
+                </div>
+                <div className="flex-grow">
+                  <h2 className="text-2xl font-bold text-foreground mb-2">{selectedPandit.name}</h2>
+                  <p className="text-muted-foreground mb-3">{selectedPandit.title}</p>
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`w-4 h-4 ${
+                            i < Math.floor(selectedPandit.rating)
+                              ? 'fill-yellow-400 text-yellow-400'
+                              : 'text-gray-300'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-sm font-medium">{selectedPandit.rating.toFixed(1)}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-3">{selectedPandit.experience} experience</p>
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {selectedPandit.specializations.map((spec: string, i: number) => (
+                      <Badge key={i} variant="secondary">{spec}</Badge>
                     ))}
-                  </Stars>
-                  <RatingValue>{selectedPandit.rating.toFixed(1)}</RatingValue>
-                </RatingContainer>
-                <Experience>{selectedPandit.experience} experience</Experience>
-                <Specializations>
-                  {selectedPandit.specializations.map((spec: string, i: number) => (
-                    <SpecializationTag key={i}>{spec}</SpecializationTag>
-                  ))}
-                </Specializations>
-                <Languages>
-                  Languages: {selectedPandit.languages.join(', ')}
-                </Languages>
-                <HourlyRate>₹{selectedPandit.hourlyRate}/hour</HourlyRate>
-                {selectedPandit.bio && <Bio>{selectedPandit.bio}</Bio>}
-                <ViewProfileButton as={Link} to={`/pandit/${selectedPandit.id}`}>
-                  View Full Profile
-                </ViewProfileButton>
-              </PanditDetails>
-            </PanditProfileCard>
-          </PanditProfileSection>
-        ) : null}
-        
-        <ServicesHeader>
-          <ServicesTitle>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Languages: {selectedPandit.languages.join(', ')}
+                  </p>
+                  <p className="text-lg font-semibold text-primary mb-3">
+                    ₹{selectedPandit.hourlyRate}/hour
+                  </p>
+                  {selectedPandit.bio && (
+                    <p className="text-sm text-muted-foreground mb-4">{selectedPandit.bio}</p>
+                  )}
+                  <Button asChild variant="outline">
+                    <Link to={`/pandit/${selectedPandit.id}`}>View Full Profile</Link>
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Header Section */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-foreground mb-4">
             {selectedPandit ? `Services by ${selectedPandit.name}` : 'Our Spiritual Services'}
-          </ServicesTitle>
-          <ServicesSubtitle>
+          </h1>
+          <p className="text-lg text-muted-foreground mb-8">
             {selectedPandit ? `Book services with ${selectedPandit.name}` : 'Discover our comprehensive range of authentic spiritual services'}
-          </ServicesSubtitle>
+          </p>
           
-          <ServicesStats>
-            <StatItem>
-              <StatNumber>{servicesToDisplay.length}</StatNumber>
-              <StatLabel>Total Services</StatLabel>
-            </StatItem>
-            <StatItem>
-              <StatNumber>{servicesToDisplay.filter(s => s.category === 'POOJA').length}</StatNumber>
-              <StatLabel>Poojas</StatLabel>
-            </StatItem>
-            <StatItem>
-              <StatNumber>{servicesToDisplay.filter(s => s.category === 'ASTROLOGY').length}</StatNumber>
-              <StatLabel>Astrology</StatLabel>
-            </StatItem>
-            <StatItem>
-              <StatNumber>{servicesToDisplay.filter(s => s.isVirtual).length}</StatNumber>
-              <StatLabel>Virtual Services</StatLabel>
-            </StatItem>
-          </ServicesStats>
-        </ServicesHeader>
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-8">
+            <div className="bg-white rounded-lg p-4 shadow-sm border">
+              <p className="text-3xl font-bold text-primary">{servicesToDisplay.length}</p>
+              <p className="text-sm text-muted-foreground">Total Services</p>
+            </div>
+            <div className="bg-white rounded-lg p-4 shadow-sm border">
+              <p className="text-3xl font-bold text-primary">
+                {servicesToDisplay.filter(s => s.category === 'POOJA').length}
+              </p>
+              <p className="text-sm text-muted-foreground">Poojas</p>
+            </div>
+            <div className="bg-white rounded-lg p-4 shadow-sm border">
+              <p className="text-3xl font-bold text-primary">
+                {servicesToDisplay.filter(s => s.category === 'ASTROLOGY').length}
+              </p>
+              <p className="text-sm text-muted-foreground">Astrology</p>
+            </div>
+            <div className="bg-white rounded-lg p-4 shadow-sm border">
+              <p className="text-3xl font-bold text-primary">
+                {servicesToDisplay.filter(s => s.isVirtual).length}
+              </p>
+              <p className="text-sm text-muted-foreground">Virtual</p>
+            </div>
+          </div>
+        </div>
 
-        <ServicesContent>
-          {/* Search and Filter Section */}
-          <FilterSection>
-            <SearchContainer>
-              <SearchInput
-                type="text"
-                placeholder="Search services..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </SearchContainer>
-            
-            <CategoryFilters>
-              {categories.map((category) => (
-                <CategoryButton
-                  key={category.value}
-                  active={selectedCategory === category.value}
-                  onClick={() => setSelectedCategory(category.value)}
-                >
-                  {category.label}
-                </CategoryButton>
-              ))}
-            </CategoryFilters>
-          </FilterSection>
-
-          {/* Services Grid */}
-          {isLoadingServices ? (
-            <LoadingContainer>
-              <LoadingSpinner size="large" />
-            </LoadingContainer>
-          ) : servicesError ? (
-            <ErrorContainer>
-              <ErrorMessage>{servicesError}</ErrorMessage>
-              <Button variant="primary" onClick={() => window.location.reload()}>
-                Retry
+        {/* Search and Filter Section */}
+        <div className="mb-8 space-y-4">
+          {/* Search Bar */}
+          <div className="relative max-w-md mx-auto">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search services..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 h-12"
+            />
+          </div>
+          
+          {/* Category Filters */}
+          <div className="flex flex-wrap justify-center gap-2">
+            {categories.map((category) => (
+              <Button
+                key={category.value}
+                variant={selectedCategory === category.value ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSelectedCategory(category.value)}
+                className="rounded-full"
+              >
+                {category.label}
               </Button>
-            </ErrorContainer>
-          ) : filteredServices.length > 0 ? (
-            <ServicesGrid>
-              {filteredServices.map((service) => (
-                <ServiceCard key={service.id}>
-                  <ServiceImage>
+            ))}
+          </div>
+        </div>
+
+        {/* Services Grid */}
+        {isLoadingServices ? (
+          <div className="flex justify-center items-center min-h-[400px]">
+            <LoadingSpinner size="large" />
+          </div>
+        ) : servicesError ? (
+          <div className="text-center py-12">
+            <p className="text-red-500 mb-4">{servicesError}</p>
+            <Button onClick={() => window.location.reload()}>Retry</Button>
+          </div>
+        ) : filteredServices.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+            {filteredServices.map((service) => (
+              <Card 
+                key={service.id}
+                className="hover-elevate group border-primary/20 h-full flex flex-col"
+              >
+                <CardHeader 
+                  className="p-0 flex-shrink-0 cursor-pointer"
+                  onClick={() => navigate(`/services/${service.id}`)}
+                >
+                  <div className="relative w-full h-48 rounded-t-lg overflow-hidden">
                     {service.imageUrl ? (
-                      <img src={service.imageUrl} alt={service.name} />
+                      <img 
+                        src={service.imageUrl} 
+                        alt={service.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
                     ) : (
-                      <ServiceIcon>
-                        {getServiceIcon(service.category)}
-                      </ServiceIcon>
+                      <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                        <span className="text-6xl">{getServiceIcon(service.category)}</span>
+                      </div>
                     )}
-                    <CategoryBadge category={service.category}>
-                      {service.category.charAt(0).toUpperCase() + service.category.slice(1)}
-                    </CategoryBadge>
-                    <VirtualBadge isVirtual={service.isVirtual}>
-                      {service.isVirtual ? 'Virtual' : 'In-Person'}
-                    </VirtualBadge>
-                  </ServiceImage>
+                    
+                    {/* Category Badge */}
+                    <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
+                      {service.category}
+                    </Badge>
+                    
+                    {/* Virtual/In-Person Badge */}
+                    <Badge 
+                      variant={service.isVirtual ? 'default' : 'secondary'}
+                      className="absolute top-3 right-3 gap-1"
+                    >
+                      {service.isVirtual ? (
+                        <>
+                          <Video className="w-3 h-3" />
+                          Virtual
+                        </>
+                      ) : (
+                        <>
+                          <MapPin className="w-3 h-3" />
+                          In-Person
+                        </>
+                      )}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                
+                <CardContent 
+                  className="p-4 flex-grow flex flex-col cursor-pointer"
+                  onClick={() => navigate(`/services/${service.id}`)}
+                >
+                  <CardTitle className="text-lg mb-2 flex items-center gap-2 flex-shrink-0">
+                    <Sparkles className="w-4 h-4 text-primary" />
+                    {service.name}
+                  </CardTitle>
                   
-                  <ServiceContent>
-                    <ServiceTitle>{service.name}</ServiceTitle>
-                    <ServiceDescription>{service.description}</ServiceDescription>
-                    
-                    <ServiceDetails>
-                      <ServiceDetail>
-                        <DetailLabel>Duration:</DetailLabel>
-                        <DetailValue>{service.durationMinutes > 0 ? `${service.durationMinutes} minutes` : 'N/A'}</DetailValue>
-                      </ServiceDetail>
-                      <ServiceDetail>
-                        <DetailLabel>Price:</DetailLabel>
-                        <DetailValue>₹{service.basePrice}</DetailValue>
-                      </ServiceDetail>
-                      <ServiceDetail>
-                        <DetailLabel>Type:</DetailLabel>
-                        <DetailValue>{service.isVirtual ? 'Virtual' : 'In-Person'}</DetailValue>
-                      </ServiceDetail>
-                      <ServiceDetail>
-                        <DetailLabel>Category:</DetailLabel>
-                        <DetailValue>{service.category.charAt(0).toUpperCase() + service.category.slice(1).toLowerCase()}</DetailValue>
-                      </ServiceDetail>
-                    </ServiceDetails>
-                    
-                    <ServiceActions>
-                      <Button
-                        variant="primary"
-                        size="medium"
-                        onClick={() => handleBookService(service.id)}
-                      >
-                        Book Service
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="medium"
-                        onClick={() => window.location.href = `/services/${service.id}`}
-                      >
-                        Learn More
-                      </Button>
-                    </ServiceActions>
-                  </ServiceContent>
-                </ServiceCard>
-              ))}
-            </ServicesGrid>
-          ) : (
-            <EmptyState>
-              <EmptyTitle>No Services Found</EmptyTitle>
-              <EmptyDescription>
-                {searchQuery || selectedCategory !== 'all'
-                  ? 'No services match your current filters. Try adjusting your search criteria.'
-                  : 'No services are currently available. Please check back later.'
-                }
-              </EmptyDescription>
-              <Button variant="primary" onClick={() => {
+                  <p className="text-muted-foreground text-sm mb-3 flex-grow line-clamp-3">
+                    {service.description}
+                  </p>
+                  
+                  <div className="space-y-2 mb-4 flex-shrink-0">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Clock className="w-3 h-3" />
+                      Duration: {service.durationMinutes > 0 ? `${service.durationMinutes} minutes` : 'N/A'}
+                    </div>
+                    <div className="flex items-center gap-2 text-lg font-bold text-primary">
+                      ₹{service.basePrice}
+                    </div>
+                    {service.tags && service.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {service.tags.slice(0, 3).map((tag: string) => (
+                          <span 
+                            key={tag} 
+                            className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors mt-auto"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleBookService(service.id);
+                    }}
+                  >
+                    Book Service
+                    <Star className="w-4 h-4 ml-1" />
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground text-lg mb-4">
+              No services found matching your criteria.
+            </p>
+            <Button 
+              variant="outline"
+              onClick={() => {
                 setSearchQuery('');
                 setSelectedCategory('all');
-              }}>
-                Clear Filters
-              </Button>
-            </EmptyState>
-          )}
-        </ServicesContent>
-      </Container>
-    </ServicesContainer>
+              }}
+            >
+              Clear Filters
+            </Button>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
-
-const ServicesContainer = styled.div`
-  min-height: 100vh;
-  background: ${({ theme }) => theme.colors.backgroundSecondary};
-  padding: ${({ theme }) => theme.spacing[8]} 0;
-`;
-
-const Container = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 ${({ theme }) => theme.spacing[4]};
-`;
-
-const ServicesHeader = styled.div`
-  text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing[12]};
-`;
-
-const ServicesTitle = styled.h1`
-  font-size: ${({ theme }) => theme.fontSizes['4xl']};
-  font-weight: ${({ theme }) => theme.fontWeights.bold};
-  color: ${({ theme }) => theme.colors.textPrimary};
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-`;
-
-const ServicesSubtitle = styled.p`
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-  color: ${({ theme }) => theme.colors.textSecondary};
-  margin-bottom: ${({ theme }) => theme.spacing[8]};
-`;
-
-const ServicesStats = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: ${({ theme }) => theme.spacing[6]};
-  margin-top: ${({ theme }) => theme.spacing[8]};
-  padding: ${({ theme }) => theme.spacing[6]};
-  background: ${({ theme }) => theme.colors.white};
-  border-radius: ${({ theme }) => theme.borderRadius['2xl']};
-  box-shadow: ${({ theme }) => theme.shadows.lg};
-
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: ${({ theme }) => theme.spacing[4]};
-  }
-`;
-
-const StatItem = styled.div`
-  text-align: center;
-`;
-
-const StatNumber = styled.div`
-  font-size: ${({ theme }) => theme.fontSizes['3xl']};
-  font-weight: ${({ theme }) => theme.fontWeights.bold};
-  color: ${({ theme }) => theme.colors.primary};
-  margin-bottom: ${({ theme }) => theme.spacing[2]};
-`;
-
-const StatLabel = styled.div`
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-`;
-
-const ServicesContent = styled.div``;
-
-const FilterSection = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing[8]};
-  padding: ${({ theme }) => theme.spacing[6]};
-  background: ${({ theme }) => theme.colors.white};
-  border-radius: ${({ theme }) => theme.borderRadius['2xl']};
-  box-shadow: ${({ theme }) => theme.shadows.lg};
-`;
-
-const SearchContainer = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-`;
-
-const SearchInput = styled.input`
-  width: 100%;
-  padding: ${({ theme }) => theme.spacing[3]} ${({ theme }) => theme.spacing[4]};
-  border: 1px solid ${({ theme }) => theme.colors.gray300};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  transition: border-color ${({ theme }) => theme.transitions.fast};
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
-`;
-
-const CategoryFilters = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: ${({ theme }) => theme.spacing[2]};
-`;
-
-const CategoryButton = styled.button<{ active: boolean }>`
-  padding: ${({ theme }) => theme.spacing[2]} ${({ theme }) => theme.spacing[4]};
-  border: 1px solid ${({ theme, active }) => 
-    active ? theme.colors.primary : theme.colors.gray300};
-  background: ${({ theme, active }) => 
-    active ? theme.colors.primary : theme.colors.white};
-  color: ${({ theme, active }) => 
-    active ? theme.colors.white : theme.colors.textPrimary};
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-  cursor: pointer;
-  transition: all ${({ theme }) => theme.transitions.fast};
-
-  &:hover {
-    background: ${({ theme, active }) => 
-      active ? theme.colors.primary : theme.colors.gray100};
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
-`;
-
-const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
-`;
-
-const ErrorContainer = styled.div`
-  text-align: center;
-  padding: ${({ theme }) => theme.spacing[8]};
-  background: ${({ theme }) => theme.colors.white};
-  border-radius: ${({ theme }) => theme.borderRadius['2xl']};
-  box-shadow: ${({ theme }) => theme.shadows.lg};
-`;
-
-const ErrorMessage = styled.p`
-  color: ${({ theme }) => theme.colors.error};
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-`;
-
-const ServicesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: ${({ theme }) => theme.spacing[6]};
-`;
-
-const ServiceCard = styled.div`
-  background: ${({ theme }) => theme.colors.white};
-  border-radius: ${({ theme }) => theme.borderRadius['2xl']};
-  overflow: hidden;
-  box-shadow: ${({ theme }) => theme.shadows.lg};
-  transition: all ${({ theme }) => theme.transitions.normal};
-  border: 1px solid ${({ theme }) => theme.colors.gray200};
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: ${({ theme }) => theme.shadows['2xl']};
-  }
-`;
-
-const ServiceImage = styled.div`
-  height: 200px;
-  background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary}20, ${({ theme }) => theme.colors.secondary}20);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-`;
-
-const ServiceIcon = styled.div`
-  font-size: 4rem;
-  opacity: 0.7;
-`;
-
-const CategoryBadge = styled.div<{ category: string }>`
-  position: absolute;
-  top: ${({ theme }) => theme.spacing[3]};
-  left: ${({ theme }) => theme.spacing[3]};
-  background: ${({ category }) => {
-    switch (category) {
-      case 'POOJA': return '#ff6b35';
-      case 'ASTROLOGY': return '#8b5cf6';
-      case 'HAVAN': return '#dc2626';
-      case 'KATHA': return '#059669';
-      case 'SPECIAL_OCCASION': return '#7c3aed';
-      case 'CONSULTATION': return '#0891b2';
-      case 'pooja': return '#ff6b35';
-      case 'astrology': return '#8b5cf6';
-      case 'virtual': return '#06b6d4';
-      case 'products': return '#10b981';
-      default: return '#6b7280';
-    }
-  }};
-  color: white;
-  padding: ${({ theme }) => theme.spacing[1]} ${({ theme }) => theme.spacing[2]};
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-  font-size: ${({ theme }) => theme.fontSizes.xs};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-`;
-
-const VirtualBadge = styled.div<{ isVirtual: boolean }>`
-  position: absolute;
-  top: ${({ theme }) => theme.spacing[3]};
-  right: ${({ theme }) => theme.spacing[3]};
-  background: ${({ isVirtual, theme }) => isVirtual ? theme.colors.info : theme.colors.success};
-  color: white;
-  padding: ${({ theme }) => theme.spacing[1]} ${({ theme }) => theme.spacing[2]};
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-  font-size: ${({ theme }) => theme.fontSizes.xs};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-`;
-
-const ServiceContent = styled.div`
-  padding: ${({ theme }) => theme.spacing[6]};
-`;
-
-const ServiceTitle = styled.h3`
-  font-size: ${({ theme }) => theme.fontSizes.xl};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  color: ${({ theme }) => theme.colors.textPrimary};
-  margin-bottom: ${({ theme }) => theme.spacing[3]};
-`;
-
-const ServiceDescription = styled.p`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  line-height: 1.6;
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-`;
-
-const ServiceDetails = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: ${({ theme }) => theme.spacing[3]};
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-`;
-
-const ServiceDetail = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing[1]};
-`;
-
-const DetailLabel = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-  color: ${({ theme }) => theme.colors.textSecondary};
-`;
-
-const DetailValue = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-`;
-
-const ServiceActions = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing[3]};
-`;
-
-const EmptyState = styled.div`
-  text-align: center;
-  padding: ${({ theme }) => theme.spacing[12]};
-  background: ${({ theme }) => theme.colors.white};
-  border-radius: ${({ theme }) => theme.borderRadius['2xl']};
-  box-shadow: ${({ theme }) => theme.shadows.lg};
-`;
-
-const EmptyTitle = styled.h3`
-  font-size: ${({ theme }) => theme.fontSizes.xl};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  color: ${({ theme }) => theme.colors.textPrimary};
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-`;
-
-const EmptyDescription = styled.p`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  margin-bottom: ${({ theme }) => theme.spacing[6]};
-  line-height: 1.6;
-`;
-
-const PanditProfileSection = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing[8]};
-`;
-
-const PanditProfileCard = styled.div`
-  background: ${({ theme }) => theme.colors.white};
-  border-radius: ${({ theme }) => theme.borderRadius['2xl']};
-  padding: ${({ theme }) => theme.spacing[8]};
-  box-shadow: ${({ theme }) => theme.shadows.lg};
-  display: flex;
-  gap: ${({ theme }) => theme.spacing[6]};
-  align-items: center;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    text-align: center;
-  }
-`;
-
-const PanditImage = styled.div`
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 4px solid ${({ theme }) => theme.colors.primary};
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-`;
-
-const PanditDetails = styled.div`
-  flex: 1;
-`;
-
-const PanditName = styled.h2`
-  font-size: ${({ theme }) => theme.fontSizes['2xl']};
-  font-weight: ${({ theme }) => theme.fontWeights.bold};
-  color: ${({ theme }) => theme.colors.textPrimary};
-  margin-bottom: ${({ theme }) => theme.spacing[2]};
-`;
-
-const PanditTitle = styled.p`
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-  color: ${({ theme }) => theme.colors.textSecondary};
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-`;
-
-const RatingContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing[2]};
-  margin-bottom: ${({ theme }) => theme.spacing[3]};
-`;
-
-const Stars = styled.div`
-  display: flex;
-  gap: 2px;
-`;
-
-const Star = styled.span<{ filled: boolean }>`
-  color: ${({ filled, theme }) => filled ? theme.colors.secondary : theme.colors.gray300};
-  font-size: ${({ theme }) => theme.fontSizes.base};
-`;
-
-const RatingValue = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  color: ${({ theme }) => theme.colors.textPrimary};
-`;
-
-const Experience = styled.p`
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  color: ${({ theme }) => theme.colors.textSecondary};
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-`;
-
-const Specializations = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: ${({ theme }) => theme.spacing[2]};
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-`;
-
-const SpecializationTag = styled.span`
-  background: ${({ theme }) => theme.colors.primary}20;
-  color: ${({ theme }) => theme.colors.primary};
-  padding: ${({ theme }) => theme.spacing[1]} ${({ theme }) => theme.spacing[3]};
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-`;
-
-const Languages = styled.p`
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  color: ${({ theme }) => theme.colors.textSecondary};
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-`;
-
-const HourlyRate = styled.p`
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-  font-weight: ${({ theme }) => theme.fontWeights.bold};
-  color: ${({ theme }) => theme.colors.primary};
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-`;
-
-const Bio = styled.p`
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  color: ${({ theme }) => theme.colors.textSecondary};
-  line-height: 1.6;
-`;
-
-const ViewProfileButton = styled(Button)`
-  background: ${({ theme }) => theme.colors.primary};
-  color: ${({ theme }) => theme.colors.white};
-  border: none;
-  padding: ${({ theme }) => theme.spacing[3]} ${({ theme }) => theme.spacing[6]};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  margin-top: ${({ theme }) => theme.spacing[4]};
-  transition: all ${({ theme }) => theme.transitions.fast};
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.primaryDark};
-    transform: translateY(-2px);
-  }
-`;
 
 export default ServicesPage;

@@ -176,6 +176,7 @@
 // import About from "@/components/About";
 // import Contact from "@/components/Contact";
 import Hero from "../components/LP/Hero";
+import Hero2 from "../components/LP/Hero2";
 import SpiritualJourney from "../components/LP/SpiritualJourney";
 import SpecialPujas from "../components/LP/SpecialPujas";
 import Services from "../components/LP/Services";
@@ -190,6 +191,7 @@ export default function Home() {
       <SpiritualJourney />
       <SpecialPujas />
       <Services />
+      <Hero2 />
       <SpiritualTools />
       <About />
       <Contact />

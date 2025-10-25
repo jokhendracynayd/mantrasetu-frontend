@@ -2,9 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* LIGHT MODE */
-:root {
-  --button-outline: rgba(0,0,0, .10);
+  /* LIGHT MODE */
+  :root {
+    --button-outline: rgba(0,0,0, .10);
   --badge-outline: rgba(0,0,0, .05);
 
   /* Automatic computation of border around primary / danger buttons */
@@ -325,4 +325,58 @@
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
     inset: -1px;
   }
+
+  /* Hero2 Animations */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  @keyframes float-delayed {
+    0%, 100% { transform: translateY(0px) rotate(12deg); }
+    50% { transform: translateY(-15px) rotate(12deg); }
+  }
+  
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-float-delayed {
+    animation: float-delayed 4s ease-in-out infinite;
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 1s ease-out;
+  }
+  
+  .animate-fade-in-up {
+    animation: fade-in-up 1s ease-out 0.2s both;
+  }
+  
+  .animate-fade-in-up-delayed {
+    animation: fade-in-up 1s ease-out 0.4s both;
+  }
+}
+
+html body[data-scroll-locked] {
+  margin-right: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
 }
