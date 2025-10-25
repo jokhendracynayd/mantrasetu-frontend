@@ -50,7 +50,6 @@ import { validateToken } from './store/slices/authSlice';
 function App() {
   const dispatch = useDispatch<AppDispatch>();
   const { isAuthenticated, isLoading, token } = useSelector((state: RootState) => state.auth);
-
   // Check for existing token on app load
   useEffect(() => {
     if (token && !isAuthenticated) {
