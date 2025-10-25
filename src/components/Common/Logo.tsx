@@ -14,37 +14,15 @@ const Logo: React.FC<LogoProps> = ({
   className 
 }) => {
   const sizes = {
-    small: { width: '120px', height: '40px' },
-    medium: { width: '180px', height: '60px' },
-    large: { width: '240px', height: '80px' },
-    'extra-large': { width: '320px', height: '120px' },
+    small: { width: '150px', height: '50px' },
+    medium: { width: '220px', height: '75px' },
+    large: { width: '300px', height: '100px' },
+    'extra-large': { width: '400px', height: '140px' },
   };
 
   return (
     <LogoContainer className={className} size={sizes[size]} color={color}>
       <LogoImage src={image2} alt="MantraSetu Logo" />
-      
-      <LogoText>
-        MantraSetu
-      </LogoText>
-      
-      <OrnamentalBorder>
-        <svg viewBox="0 0 200 200" width="100%" height="100%">
-          <circle cx="100" cy="100" r="95" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="5,5" opacity="0.3" />
-          <circle cx="100" cy="100" r="85" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="3,3" opacity="0.2" />
-          <circle cx="100" cy="100" r="75" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="2,2" opacity="0.1" />
-        </svg>
-      </OrnamentalBorder>
-      
-      <RadiatingDots>
-        {Array.from({ length: 12 }).map((_, index) => (
-          <Dot
-            key={index}
-            angle={index * 30}
-            delay={index * 0.1}
-          />
-        ))}
-      </RadiatingDots>
     </LogoContainer>
   );
 };
@@ -61,9 +39,8 @@ const LogoContainer = styled.div<{ size: { width: string; height: string }; colo
 `;
 
 const LogoImage = styled.img`
-  width: 60%;
-  height: 60%;
-  margin-bottom: 8px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 `;
 

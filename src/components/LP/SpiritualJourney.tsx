@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Sparkles, BookOpen, Star, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -11,18 +11,20 @@ const journeyServices = [
   {
     icon: Calendar,
     title: "Book your first Puja",
-    description: "Start your spiritual journey with a personalized puja ceremony",
+    description:
+      "Start your spiritual journey with a personalized puja ceremony",
     action: "Book Now",
     image: pujaImage,
-    isAvailable: true
+    isAvailable: true,
   },
   {
     icon: Sparkles,
     title: "Book Sacred Ritual",
-    description: "Experience traditional rituals performed by experienced Pandits",
+    description:
+      "Experience traditional rituals performed by experienced Pandits",
     action: "Launching Soon",
     image: ritualImage,
-    isAvailable: false
+    isAvailable: false,
   },
   {
     icon: BookOpen,
@@ -30,16 +32,17 @@ const journeyServices = [
     description: "Access sacred texts, mantras, and spiritual wisdom",
     action: "Launching Soon",
     image: libraryImage,
-    isAvailable: false
+    isAvailable: false,
   },
   {
     icon: Star,
     title: "Personalized Astrology Tools",
-    description: "Get insights with customized astrology and spiritual guidance",
+    description:
+      "Get insights with customized astrology and spiritual guidance",
     action: "Launching Soon",
     image: astrologyImage,
-    isAvailable: false
-  }
+    isAvailable: false,
+  },
 ];
 
 export default function SpiritualJourney() {
@@ -47,24 +50,30 @@ export default function SpiritualJourney() {
     <section className="py-16 bg-gradient-to-b from-primary/5 to-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2
+            id="begin_your_spiritual_journey"
+            className="text-3xl md:text-4xl font-bold text-foreground mb-4"
+          >
             Begin Your Spiritual Journey
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Take your first steps into a deeper spiritual practice with our guided services
+            Take your first steps into a deeper spiritual practice with our
+            guided services
           </p>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {journeyServices.map((service, index) => (
-            <Card 
-              key={service.title} 
+            <Card
+              key={service.title}
               className={`text-center border-primary/20 h-full flex flex-col relative ${
-                service.isAvailable 
-                  ? "hover-elevate cursor-pointer group" 
+                service.isAvailable
+                  ? "hover-elevate cursor-pointer group"
                   : "opacity-75"
               }`}
-              data-testid={`card-journey-${service.title.toLowerCase().replace(/\s+/g, '-')}`}
+              data-testid={`card-journey-${service.title
+                .toLowerCase()
+                .replace(/\s+/g, "-")}`}
             >
               {/* Launching Soon Ribbon */}
               {!service.isAvailable && (
@@ -74,7 +83,9 @@ export default function SpiritualJourney() {
                     <div className="bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 text-white text-xs font-bold px-6 py-2 shadow-xl transform rotate-12 hover:rotate-6 transition-all duration-300 hover:scale-105">
                       <div className="flex items-center space-x-1">
                         <span className="text-sm">🚀</span>
-                        <span className="font-extrabold tracking-wide">LAUNCHING SOON</span>
+                        <span className="font-extrabold tracking-wide">
+                          LAUNCHING SOON
+                        </span>
                       </div>
                       {/* Shine effect */}
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 transform -skew-x-12"></div>
@@ -88,8 +99,8 @@ export default function SpiritualJourney() {
               )}
               <CardHeader className="pb-3 flex-shrink-0">
                 <div className="w-full h-40 rounded-lg overflow-hidden mb-4">
-                  <img 
-                    src={service.image} 
+                  <img
+                    src={service.image}
                     alt={service.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -101,23 +112,30 @@ export default function SpiritualJourney() {
                   {service.description}
                 </p>
                 {service.isAvailable ? (
-                  <Link to="/pujas">
-                    <Button 
+                  <Link
+                    to="/services"
+                    className="font-medium text-foreground hover:text-primary transition-colors relative group"
+                  >
+                    <Button
                       variant="outline"
                       size="sm"
                       className="mt-auto group-hover:bg-primary group-hover:text-primary-foreground transition-colors w-full"
-                      data-testid={`button-${service.title.toLowerCase().replace(/\s+/g, '-')}`}
+                      data-testid={`button-${service.title
+                        .toLowerCase()
+                        .replace(/\s+/g, "-")}`}
                     >
                       {service.action}
                       <ArrowRight className="w-4 h-4 ml-1" />
                     </Button>
                   </Link>
                 ) : (
-                  <Button 
+                  <Button
                     variant="secondary"
                     size="sm"
                     className="mt-auto cursor-not-allowed opacity-75 w-full"
-                    data-testid={`button-${service.title.toLowerCase().replace(/\s+/g, '-')}`}
+                    data-testid={`button-${service.title
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")}`}
                     disabled
                   >
                     {service.action}

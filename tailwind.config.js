@@ -84,9 +84,9 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-sans)"],
-        serif: ["var(--font-serif)"],
-        mono: ["var(--font-mono)"],
+        sans: ["Open Sans", "sans-serif"],
+        serif: ["Georgia", "serif"],
+        mono: ["Menlo", "Monaco", "Courier New", "monospace"],
       },
       keyframes: {
         "accordion-down": {

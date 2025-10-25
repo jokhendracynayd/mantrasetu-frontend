@@ -41,6 +41,7 @@ import ServiceEnrollmentPage from './pages/ServiceEnrollmentPage';
 // Components
 import Layout from './components/Layout/Layout';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
+import ScrollToTop from './components/ScrollToTop';
 
 // Types and Actions
 import type { RootState, AppDispatch } from "./store/store";
@@ -66,16 +67,22 @@ function App() {
   };
 
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/login" element={
+    <>
+      <ScrollToTop />
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/login" element={
         <AuthRedirect>
-          <LoginPage />
+          <Layout>
+            <LoginPage />
+          </Layout>
         </AuthRedirect>
       } />
       <Route path="/register" element={
         <AuthRedirect>
-          <RegisterPage />
+          <Layout>
+            <RegisterPage />
+          </Layout>
         </AuthRedirect>
       } />
       
@@ -92,7 +99,7 @@ function App() {
         </Layout>
       } />
       
-      <Route path="/services/:id" element={
+      <Route path="/puja/:id" element={
         <Layout>
           <ServiceDetailPage />
         </Layout>
@@ -246,6 +253,13 @@ function App() {
         </ProtectedRoute>
       } />
       
+      {/* Dynamic Service Detail Route - Must be after all specific /services/* routes */}
+      <Route path="/services/:id" element={
+        <Layout>
+          <ServiceDetailPage />
+        </Layout>
+      } />
+      
       {/* Other Routes */}
       <Route path="/cart" element={
         <ProtectedRoute>
@@ -255,9 +269,10 @@ function App() {
         </ProtectedRoute>
       } />
       
-      {/* 404 Route */}
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+        {/* 404 Route */}
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </>
   );
 }
 

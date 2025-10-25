@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-
-import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import { Mail, Lock, Loader2 } from 'lucide-react';
 
 import { loginUser } from '../store/slices/authSlice';
-import type{ RootState } from '../store/store';
-import type{ AppDispatch } from '../store/store';
+import type { RootState, AppDispatch } from '../store/store';
+
 import Logo from '../components/Common/Logo';
-import Button from '../components/Common/Button';
-import Input from '../components/Common/Input';
-import LoadingSpinner from '../components/Common/LoadingSpinner';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface LoginForm {
   email: string;
@@ -25,7 +23,6 @@ const LoginPage: React.FC = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { error } = useSelector((state: RootState) => state.auth);
 
   const {
     register,
@@ -34,81 +31,73 @@ const LoginPage: React.FC = () => {
     formState: { errors },
   } = useForm<LoginForm>();
 
-
-  const onSubmit = async (data: LoginForm, event?: React.BaseSyntheticEvent) => {
-    // Prevent default form submission
-    if (event) {
-      event.preventDefault();
-    }
-    
+  const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
     setIsSuccess(false);
-    
+
     try {
-      const response = await dispatch(loginUser(data)).unwrap();
-      
+      await dispatch(loginUser(data)).unwrap();
+
       setIsSuccess(true);
       toast.success('Login successful!');
-      
-      // Only clear form and redirect after successful login
+
       setTimeout(() => {
-        // Reset form only after success
         reset();
         navigate('/dashboard');
       }, 1500);
-      
     } catch (error: any) {
       console.error('Login error:', error);
       toast.error(error || 'Login failed. Please try again.');
-      // Don't clear form on error - keep user data
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    
-    // Let react-hook-form handle the submission
-    await handleSubmit(onSubmit)(event);
-  };
-
-  const handleGoogleLogin = () => {
-    // Implement Google OAuth
-    toast.success('Google login coming soon!');
-  };
-
   return (
-    <LoginContainer>
-      <LeftSection>
-        <LogoContainer>
+    <div className="flex min-h-[calc(100vh-80px)] bg-gradient-to-br from-orange-500 to-orange-400">
+      {/* Left Section - Logo */}
+      <div className="hidden lg:flex flex-1 items-center justify-center bg-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(#ff6b3520_1px,transparent_1px)] [background-size:20px_20px] animate-[float_20s_ease-in-out_infinite]" />
+        <div className="text-center z-10 relative">
           <Logo size="extra-large" />
-          <Tagline>Your Spiritual Journey Begins Here</Tagline>
-        </LogoContainer>
-      </LeftSection>
+        </div>
+      </div>
 
-      <RightSection>
-        <LoginFormContainer>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <LoginTitle>LOGIN</LoginTitle>
-            
-            <Form onSubmit={handleFormSubmit}>
-              {isSuccess && (
-                <SuccessMessage>
-                  ✅ Login successful! Redirecting to dashboard...
-                </SuccessMessage>
-              )}
-              
-              <InputGroup>
+      {/* Right Section - Form */}
+      <div className="flex-1 flex items-center justify-center p-4 md:p-8 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10" />
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-md bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 z-10"
+        >
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex justify-center mb-6">
+            <Logo size="medium" />
+          </div>
+
+          <h1 className="text-3xl font-bold text-center text-foreground mb-8 tracking-wide">
+            LOGIN
+          </h1>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            {/* Success Message */}
+            {isSuccess && (
+              <div className="bg-green-50 border border-green-500 text-green-700 px-4 py-3 rounded-lg text-center font-medium">
+                ✅ Login successful! Redirecting to dashboard...
+              </div>
+            )}
+
+            {/* Email */}
+            <div className="space-y-2">
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   type="email"
                   placeholder="Email Address"
-                  icon="email"
+                  className="pl-10 h-11"
                   {...register('email', {
                     required: 'Email is required',
                     pattern: {
@@ -116,15 +105,21 @@ const LoginPage: React.FC = () => {
                       message: 'Invalid email address',
                     },
                   })}
-                  error={errors.email?.message}
                 />
-              </InputGroup>
+              </div>
+              {errors.email && (
+                <p className="text-xs text-red-500">{errors.email.message}</p>
+              )}
+            </div>
 
-              <InputGroup>
+            {/* Password */}
+            <div className="space-y-2">
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   type="password"
                   placeholder="Password"
-                  icon="lock"
+                  className="pl-10 h-11"
                   {...register('password', {
                     required: 'Password is required',
                     minLength: {
@@ -132,282 +127,70 @@ const LoginPage: React.FC = () => {
                       message: 'Password must be at least 6 characters',
                     },
                   })}
-                  error={errors.password?.message}
                 />
-              </InputGroup>
+              </div>
+              {errors.password && (
+                <p className="text-xs text-red-500">{errors.password.message}</p>
+              )}
+            </div>
 
-              <ForgotPasswordLink to="/forgot-password">
+            {/* Forgot Password */}
+            <div className="text-right">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-primary hover:underline font-medium"
+              >
                 Forgot Password?
-              </ForgotPasswordLink>
+              </Link>
+            </div>
 
-              <Button
-                type="submit"
-                variant="primary"
-                size="large"
-                disabled={isLoading}
-                fullWidth
-              >
-                {isLoading ? (
-                  <>
-                    <LoadingSpinner size="small" />
-                    <span style={{ marginLeft: '8px' }}>Logging in...</span>
-                  </>
-                ) : (
-                  'LOGIN'
-                )}
-              </Button>
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-primary hover:bg-primary/90 text-white font-semibold h-11"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Logging in...
+                </>
+              ) : (
+                'LOGIN'
+              )}
+            </Button>
 
-              <Divider>
-                <span>OR</span>
-              </Divider>
+            {/* Divider */}
+            <div className="relative flex items-center py-2">
+              <div className="flex-grow border-t border-border" />
+              <span className="flex-shrink mx-4 text-sm text-muted-foreground font-medium">
+                OR
+              </span>
+              <div className="flex-grow border-t border-border" />
+            </div>
 
-              <GoogleButton
-                type="button"
-                onClick={handleGoogleLogin}
-                variant="secondary"
-                size="large"
-                fullWidth
-              >
-                <GoogleIcon>G</GoogleIcon>
-                Sign up with Google
-              </GoogleButton>
+            {/* Alternative Buttons */}
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => navigate('/pandit-onboarding')}
+              className="w-full font-semibold h-11"
+            >
+              🕉️ Join as Pandit Ji
+            </Button>
 
-              <SignupLink>
-                Don't have an account? <Link to="/register">Sign up</Link>
-              </SignupLink>
-            </Form>
-          </motion.div>
-        </LoginFormContainer>
-      </RightSection>
-    </LoginContainer>
+            {/* Register Link */}
+            <p className="text-center text-sm text-muted-foreground pt-4">
+              Don't have an account?{' '}
+              <Link to="/register" className="text-primary hover:underline font-semibold">
+                Sign up
+              </Link>
+            </p>
+          </form>
+        </motion.div>
+      </div>
+    </div>
   );
 };
-
-const LoginContainer = styled.div`
-  display: flex;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #ff6b35 0%, #ff8a65 100%);
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
-`;
-
-const LeftSection = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: ${({ theme }) => theme.colors.white};
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(
-      circle,
-      ${({ theme }) => theme.colors.primary}20 1px,
-      transparent 1px
-    );
-    background-size: 20px 20px;
-    animation: float 20s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    33% { transform: translate(30px, -30px) rotate(120deg); }
-    66% { transform: translate(-20px, 20px) rotate(240deg); }
-  }
-
-  @media (max-width: 768px) {
-    min-height: 40vh;
-  }
-`;
-
-const LogoContainer = styled.div`
-  text-align: center;
-  z-index: 1;
-  position: relative;
-`;
-
-const Tagline = styled.p`
-  margin-top: ${({ theme }) => theme.spacing[4]};
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font-size: ${({ theme }) => theme.fontSizes.xl};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-  
-  @media (max-width: 768px) {
-    font-size: ${({ theme }) => theme.fontSizes.lg};
-  }
-`;
-
-const RightSection = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 107, 53, 0.9) 0%,
-    rgba(255, 138, 101, 0.9) 100%
-  ),
-  url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-  background-size: cover;
-  background-position: center;
-  position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('/src/assets/Rectangle.svg');
-    background-size: 200px 200px;
-    animation: sparkle 15s linear infinite;
-  }
-
-  @keyframes sparkle {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(-200px, -200px); }
-  }
-
-  @media (max-width: 768px) {
-    min-height: 60vh;
-  }
-`;
-
-const LoginFormContainer = styled.div`
-  background: ${({ theme }) => theme.colors.primary};
-  border-radius: ${({ theme }) => theme.borderRadius['2xl']};
-  padding: ${({ theme }) => theme.spacing[8]};
-  width: 100%;
-  max-width: 400px;
-  box-shadow: ${({ theme }) => theme.shadows['2xl']};
-  z-index: 1;
-  position: relative;
-
-  @media (max-width: 768px) {
-    margin: ${({ theme }) => theme.spacing[4]};
-    padding: ${({ theme }) => theme.spacing[6]};
-  }
-`;
-
-const LoginTitle = styled.h1`
-  color: ${({ theme }) => theme.colors.white};
-  font-size: ${({ theme }) => theme.fontSizes['3xl']};
-  font-weight: ${({ theme }) => theme.fontWeights.bold};
-  text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing[8]};
-  letter-spacing: 2px;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing[4]};
-`;
-
-const SuccessMessage = styled.div`
-  background: ${({ theme }) => theme.colors.success}20;
-  border: 1px solid ${({ theme }) => theme.colors.success};
-  color: ${({ theme }) => theme.colors.success};
-  padding: ${({ theme }) => theme.spacing[3]} ${({ theme }) => theme.spacing[4]};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  text-align: center;
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-`;
-
-const InputGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing[2]};
-`;
-
-const ForgotPasswordLink = styled(Link)`
-  color: ${({ theme }) => theme.colors.white};
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  text-align: right;
-  text-decoration: underline;
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
-
-  &:hover {
-    opacity: 1;
-  }
-`;
-
-const Divider = styled.div`
-  display: flex;
-  align-items: center;
-  margin: ${({ theme }) => theme.spacing[4]} 0;
-
-  &::before,
-  &::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: ${({ theme }) => theme.colors.white}40;
-  }
-
-  span {
-    padding: 0 ${({ theme }) => theme.spacing[4]};
-    color: ${({ theme }) => theme.colors.white};
-    font-size: ${({ theme }) => theme.fontSizes.sm};
-    font-weight: ${({ theme }) => theme.fontWeights.medium};
-  }
-`;
-
-const GoogleButton = styled(Button)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: ${({ theme }) => theme.spacing[3]};
-  background: ${({ theme }) => theme.colors.white};
-  color: ${({ theme }) => theme.colors.textPrimary};
-  border: 1px solid ${({ theme }) => theme.colors.gray300};
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.gray50};
-    border-color: ${({ theme }) => theme.colors.gray400};
-  }
-`;
-
-const GoogleIcon = styled.div`
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #4285f4;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-`;
-
-const SignupLink = styled.p`
-  text-align: center;
-  color: ${({ theme }) => theme.colors.white};
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-
-  a {
-    color: ${({ theme }) => theme.colors.white};
-    font-weight: ${({ theme }) => theme.fontWeights.semibold};
-    text-decoration: underline;
-
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-`;
-
 
 export default LoginPage;

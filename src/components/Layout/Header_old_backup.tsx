@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import styled from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import styled from "styled-components";
+import { motion, AnimatePresence } from "framer-motion";
 
-import type { RootState, AppDispatch } from '../../store/store';
+import type { RootState, AppDispatch } from "../../store/store";
 
-import { logoutUser } from '../../store/slices/authSlice';
+import { logoutUser } from "../../store/slices/authSlice";
 
-import Logo from '../Common/Logo';
-import Button from '../Common/Button';
-import Input from '../Common/Input';
+import Logo from "../Common/Logo";
+import Button from "../Common/Button";
+import Input from "../Common/Input";
 
 interface HeaderProps {
   isMenuOpen: boolean;
@@ -18,44 +18,45 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
-  
+
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, user } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   // Helper function to determine user role
   const getUserRole = () => {
-    return user?.role || 'USER';
+    return user?.role || "USER";
   };
 
   // Helper function to check if user is pandit
   const isPandit = () => {
-    return getUserRole() === 'PANDIT';
+    return getUserRole() === "PANDIT";
   };
 
   // Helper function to check if user is admin
   const isAdmin = () => {
-    return getUserRole() === 'ADMIN' || getUserRole() === 'SUPER_ADMIN';
+    return getUserRole() === "ADMIN" || getUserRole() === "SUPER_ADMIN";
   };
-  
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/services?search=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery('');
+      setSearchQuery("");
     }
   };
 
   const handleLogout = async () => {
     try {
       await dispatch(logoutUser()).unwrap();
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     }
   };
 
@@ -77,7 +78,7 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
           {/* Navigation */}
           <Navigation>
             <NavLink to="/">Home</NavLink>
-            
+
             <ServicesDropdown
               onMouseEnter={() => setIsServicesDropdownOpen(true)}
               onMouseLeave={() => setIsServicesDropdownOpen(false)}
@@ -86,7 +87,7 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
                 Services
                 <DropdownIcon isOpen={isServicesDropdownOpen}>▼</DropdownIcon>
               </ServicesLink>
-              
+
               <AnimatePresence>
                 {isServicesDropdownOpen && (
                   <ServicesDropdownMenu
@@ -98,14 +99,22 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
                     <DropdownItem to="/services">All Services</DropdownItem>
                     {isPandit() && (
                       <>
-                        <DropdownItem to="/services/my-services">My Services</DropdownItem>
-                        <DropdownItem to="/services/availability">Set Availability</DropdownItem>
+                        <DropdownItem to="/services/my-services">
+                          My Services
+                        </DropdownItem>
+                        <DropdownItem to="/services/availability">
+                          Set Availability
+                        </DropdownItem>
                       </>
                     )}
                     {isAdmin() && (
                       <>
-                        <DropdownItem to="/services/manage">Manage Services</DropdownItem>
-                        <DropdownItem to="/services/analytics">Analytics</DropdownItem>
+                        <DropdownItem to="/services/manage">
+                          Manage Services
+                        </DropdownItem>
+                        <DropdownItem to="/services/analytics">
+                          Analytics
+                        </DropdownItem>
                       </>
                     )}
                   </ServicesDropdownMenu>
@@ -118,8 +127,7 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
               <>
                 {/* Regular user and pandit navigation */}
                 <NavLink to="/bookings">My Bookings</NavLink>
-               
-                
+
                 {/* Pandit-specific navigation */}
                 {isPandit() && (
                   <>
@@ -128,20 +136,19 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
                     <NavLink to="/pandit/earnings">Earnings</NavLink>
                   </>
                 )}
-                
+
                 {/* Admin-specific navigation */}
-    {isAdmin() && (
-      <>
-        <NavLink to="/admin/dashboard">Admin Dashboard</NavLink>
-        <NavLink to="/admin/users">Manage Users</NavLink>
-        <NavLink to="/admin/pandits">Manage Pandits</NavLink>
-        <NavLink to="/admin/services">Manage Services</NavLink>
-        <NavLink to="/admin/analytics">Analytics</NavLink>
-      </>
-    )}
-                
+                {isAdmin() && (
+                  <>
+                    <NavLink to="/admin/dashboard">Admin Dashboard</NavLink>
+                    <NavLink to="/admin/users">Manage Users</NavLink>
+                    <NavLink to="/admin/pandits">Manage Pandits</NavLink>
+                    <NavLink to="/admin/services">Manage Services</NavLink>
+                    <NavLink to="/admin/analytics">Analytics</NavLink>
+                  </>
+                )}
+
                 <NavLink to="/contact">Contact Us</NavLink>
-                
               </>
             ) : (
               <>
@@ -170,12 +177,14 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
             {/* Language Selector */}
             <LanguageSelector>
               <LanguageButton
-                onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
+                onClick={() =>
+                  setIsLanguageDropdownOpen(!isLanguageDropdownOpen)
+                }
               >
                 English
                 <DropdownIcon isOpen={isLanguageDropdownOpen}>▼</DropdownIcon>
               </LanguageButton>
-              
+
               <AnimatePresence>
                 {isLanguageDropdownOpen && (
                   <LanguageDropdown
@@ -184,16 +193,24 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <LanguageOption onClick={() => setIsLanguageDropdownOpen(false)}>
+                    <LanguageOption
+                      onClick={() => setIsLanguageDropdownOpen(false)}
+                    >
                       Hindi
                     </LanguageOption>
-                    <LanguageOption onClick={() => setIsLanguageDropdownOpen(false)}>
+                    <LanguageOption
+                      onClick={() => setIsLanguageDropdownOpen(false)}
+                    >
                       Tamil
                     </LanguageOption>
-                    <LanguageOption onClick={() => setIsLanguageDropdownOpen(false)}>
+                    <LanguageOption
+                      onClick={() => setIsLanguageDropdownOpen(false)}
+                    >
                       Telugu
                     </LanguageOption>
-                    <LanguageOption onClick={() => setIsLanguageDropdownOpen(false)}>
+                    <LanguageOption
+                      onClick={() => setIsLanguageDropdownOpen(false)}
+                    >
                       Sanskrit
                     </LanguageOption>
                   </LanguageDropdown>
@@ -207,14 +224,22 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
                 <>
                   {/* User Profile Icon */}
                   <UserIcon>
-                    <Link to={isPandit() ? "/pandit/profile" : isAdmin() ? "/admin/profile" : "/profile"}>
+                    <Link
+                      to={
+                        isPandit()
+                          ? "/pandit/profile"
+                          : isAdmin()
+                          ? "/admin/profile"
+                          : "/profile"
+                      }
+                    >
                       <UserIconSvg>
                         <circle cx="12" cy="12" r="10" />
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                       </UserIconSvg>
                     </Link>
                   </UserIcon>
-                  
+
                   {/* Show cart only for regular users */}
                   {!isPandit() && !isAdmin() && (
                     <CartIcon>
@@ -227,36 +252,34 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
                       </Link>
                     </CartIcon>
                   )}
-                  
+
                   {/* User role indicator */}
                   <UserRoleBadge>
-                    {isPandit() ? 'Pandit' : isAdmin() ? 'Admin' : 'User'}
+                    {isPandit() ? "Pandit" : isAdmin() ? "Admin" : "User"}
                   </UserRoleBadge>
-                  
-                  <LogoutButton onClick={handleLogout}>
-                    Logout
-                  </LogoutButton>
+
+                  <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
                 </>
               ) : (
                 <>
                   <Button
                     variant="outline"
                     size="small"
-                    onClick={() => navigate('/login')}
+                    onClick={() => navigate("/login")}
                   >
                     Login
                   </Button>
                   <Button
                     variant="primary"
                     size="small"
-                    onClick={() => navigate('/register')}
+                    onClick={() => navigate("/register")}
                   >
                     Sign Up
                   </Button>
                   <Button
                     variant="secondary"
                     size="small"
-                    onClick={() => navigate('/pandit-onboarding')}
+                    onClick={() => navigate("/pandit-onboarding")}
                   >
                     🕉️ Pandit Ji
                   </Button>
@@ -280,7 +303,7 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
           {isMenuOpen && (
             <MobileMenu
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
+              animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
             >
@@ -288,67 +311,102 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
                 <MobileNavLink to="/" onClick={() => setIsMenuOpen(false)}>
                   Home
                 </MobileNavLink>
-                <MobileNavLink to="/services" onClick={() => setIsMenuOpen(false)}>
+                <MobileNavLink
+                  to="/services"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   Services
                 </MobileNavLink>
-                
+
                 {/* Show different navigation based on authentication and role */}
                 {isAuthenticated ? (
                   <>
-                    <MobileNavLink to="/bookings" onClick={() => setIsMenuOpen(false)}>
+                    <MobileNavLink
+                      to="/bookings"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
                       My Bookings
                     </MobileNavLink>
-                    <MobileNavLink to="/service-enrollment" onClick={() => setIsMenuOpen(false)}>
+                    <MobileNavLink
+                      to="/service-enrollment"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
                       Enroll in Services
                     </MobileNavLink>
-                    
+
                     {/* Pandit-specific navigation */}
                     {isPandit() && (
                       <>
-                        <MobileNavLink to="/pandit/dashboard" onClick={() => setIsMenuOpen(false)}>
+                        <MobileNavLink
+                          to="/pandit/dashboard"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
                           Pandit Dashboard
                         </MobileNavLink>
-                        <MobileNavLink to="/pandit/bookings" onClick={() => setIsMenuOpen(false)}>
+                        <MobileNavLink
+                          to="/pandit/bookings"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
                           Manage Bookings
                         </MobileNavLink>
-                        <MobileNavLink to="/pandit/earnings" onClick={() => setIsMenuOpen(false)}>
+                        <MobileNavLink
+                          to="/pandit/earnings"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
                           Earnings
                         </MobileNavLink>
                       </>
                     )}
-                    
+
                     {/* Admin-specific navigation */}
                     {isAdmin() && (
                       <>
-                        <MobileNavLink to="/admin/dashboard" onClick={() => setIsMenuOpen(false)}>
+                        <MobileNavLink
+                          to="/admin/dashboard"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
                           Admin Dashboard
                         </MobileNavLink>
-                        <MobileNavLink to="/admin/users" onClick={() => setIsMenuOpen(false)}>
+                        <MobileNavLink
+                          to="/admin/users"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
                           Manage Users
                         </MobileNavLink>
-                        <MobileNavLink to="/admin/pandits" onClick={() => setIsMenuOpen(false)}>
+                        <MobileNavLink
+                          to="/admin/pandits"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
                           Manage Pandits
                         </MobileNavLink>
-                        <MobileNavLink to="/admin/analytics" onClick={() => setIsMenuOpen(false)}>
+                        <MobileNavLink
+                          to="/admin/analytics"
+                          onClick={() => setIsMenuOpen(false)}
+                        >
                           Analytics
                         </MobileNavLink>
                       </>
                     )}
-                    
                   </>
                 ) : (
                   <>
                     {/* Non-authenticated user navigation */}
-                    <MobileNavLink to="/services" onClick={() => setIsMenuOpen(false)}>
+                    <MobileNavLink
+                      to="/services"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
                       Services
                     </MobileNavLink>
                   </>
                 )}
-                
-                <MobileNavLink to="/contact" onClick={() => setIsMenuOpen(false)}>
+
+                <MobileNavLink
+                  to="/contact"
+                  onClick={() => setIsMenuOpen(false)}
+                >
                   Contact Us
                 </MobileNavLink>
-                
+
                 {!isAuthenticated && (
                   <MobileAuthButtons>
                     <Button
@@ -356,7 +414,7 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
                       size="medium"
                       fullWidth
                       onClick={() => {
-                        navigate('/login');
+                        navigate("/login");
                         setIsMenuOpen(false);
                       }}
                     >
@@ -367,7 +425,7 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
                       size="medium"
                       fullWidth
                       onClick={() => {
-                        navigate('/register');
+                        navigate("/register");
                         setIsMenuOpen(false);
                       }}
                     >
@@ -378,7 +436,7 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen }) => {
                       size="medium"
                       fullWidth
                       onClick={() => {
-                        navigate('/pandit-onboarding');
+                        navigate("/pandit-onboarding");
                         setIsMenuOpen(false);
                       }}
                     >
@@ -453,7 +511,7 @@ const NavLink = styled(Link)`
   }
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -8px;
     left: 0;
@@ -489,7 +547,7 @@ const ServicesLink = styled.div`
 const DropdownIcon = styled.span<{ isOpen: boolean }>`
   font-size: 10px;
   transition: transform ${({ theme }) => theme.transitions.fast};
-  transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+  transform: ${({ isOpen }) => (isOpen ? "rotate(180deg)" : "rotate(0deg)")};
 `;
 
 const ServicesDropdownMenu = styled(motion.div)`

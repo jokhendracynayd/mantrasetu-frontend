@@ -25,9 +25,8 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-      sans-serif;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background: 
@@ -76,6 +75,7 @@ export const GlobalStyles = createGlobalStyle`
   *:focus {
     outline: 2px solid #ff6b35;
     outline-offset: 2px;
+    border:none;
   }
 
   /* Button reset */
@@ -89,7 +89,7 @@ export const GlobalStyles = createGlobalStyle`
   /* Input reset */
   input, textarea, select {
     font-family: inherit;
-    border: none;
+    /* border: none; */ /* Commented out to allow custom borders */
     outline: none;
   }
 

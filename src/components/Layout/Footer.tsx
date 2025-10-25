@@ -1,294 +1,188 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Phone, Mail, MapPin, Facebook, Twitter, Instagram, Youtube } from "lucide-react";
+import logoImage from "@assets/MantraSetu Logo_1758027345283.png";
 
-import Logo from '../Common/Logo';
-import Button from '../Common/Button';
+const footerSections = [
+  {
+    title: "Services",
+    links: [
+      { label: "Pandit Booking", href: "#" },
+      { label: "Live Darshans", href: "#" },
+      { label: "Virtual Temple Tours", href: "#" },
+      { label: "Spiritual Library", href: "#" },
+      { label: "Join as Pandit", href: "#services" }
+    ]
+  },
+  {
+    title: "Spiritual Tools",
+    links: [
+      { label: "Panchang", href: "#" },
+      { label: "Muhurat Finder", href: "#" },
+      { label: "Rashifal", href: "#" },
+      { label: "Kundali Creation", href: "#" }
+    ]
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About Us", href: "#about" },
+      { label: "Our Mission", href: "#" },
+      { label: "Partner with Us", href: "#" },
+      { label: "Careers", href: "#" }
+    ]
+  },
+  {
+    title: "Support",
+    links: [
+      { label: "Help Center", href: "#" },
+      { label: "Contact Us", href: "#contact" },
+      { label: "Privacy Policy", href: "#" },
+      { label: "Terms of Service", href: "#" }
+    ]
+  }
+];
 
-const Footer: React.FC = () => {
+const socialLinks = [
+  { icon: Facebook, href: "#", label: "Facebook" },
+  { icon: Twitter, href: "#", label: "Twitter" },
+  { icon: Instagram, href: "#", label: "Instagram" },
+  { icon: Youtube, href: "#", label: "YouTube" }
+];
+
+export default function Footer() {
+  const navigate = useNavigate();
+
+  const handleLinkClick = (link: { label: string; href: string }) => {
+    if (link.label === "Join as Pandit") {
+      navigate("/pandit-onboarding");
+    } else {
+      // Handle other links normally - could be anchor links or navigation
+      if (link.href.startsWith('#')) {
+        document.querySelector(link.href)?.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
-    <FooterContainer>
-      <Container>
-        <FooterContent>
-          <FooterLeft>
-            <FooterLogo>
-              <Logo size="medium" />
-            </FooterLogo>
-            <FooterDescription>
-              From birth to wedding to spiritual cleansing every Hindu ritual has deep meaning. 
-              But finding a qualified, trustworthy pandit can be a challenge. That's where we step in. 
-              Our online pandit service makes it easy to book experienced priests for every 
-              kind of puja – whether Vedic, regional, or custom.
-            </FooterDescription>
-          </FooterLeft>
+    <footer className="bg-card border-t border-border py-14">
+      <div className="container mx-auto px-4 py-16">
+        {/* Main Footer Content */}
+        <div className="grid lg:grid-cols-5 gap-8 mb-12">
+          {/* Brand Section */}
+          <div className="lg:col-span-1">
+            <div className="mb-4">
+              <img 
+                src={logoImage} 
+                alt="MantraSetu Logo" 
+                className="h-20 w-auto mb-2 scale-[1.4]"
+              />
+            </div>
+            <p className="text-muted-foreground mb-6 leading-relaxed">
+              Bridging culture, devotion, and convenience in one place. Where mantras flow, divinity grows.
+            </p>
 
-          <FooterCenter>
-            <FooterTitle>Quick Links</FooterTitle>
-            <FooterLinks>
-              <FooterLink to="/">Home</FooterLink>
-              <FooterLink to="/services">Services</FooterLink>
-              <FooterLink to="/contact">Contacts</FooterLink>
-            </FooterLinks>
-          </FooterCenter>
+            {/* Contact Info */}
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center space-x-3 text-muted-foreground">
+                <Phone className="w-4 h-4" />
+                <span>+91 88228 82264</span>
+              </div>
+              <div className="flex items-center space-x-3 text-muted-foreground">
+                <Mail className="w-4 h-4" />
+                <span>support@mantrasetu.com</span>
+              </div>
+              <div className="flex items-center space-x-3 text-muted-foreground">
+                <MapPin className="w-4 h-4" />
+                <span>Bhopal, Madhya Pradesh, India</span>
+              </div>
+            </div>
+          </div>
 
-          <FooterRight>
-            <FooterTitle>Address</FooterTitle>
-            <ContactInfo>
-              <ContactItem>
-                <ContactIcon>📍</ContactIcon>
-                <ContactValue>123, Anywhere, Any City 156 343</ContactValue>
-              </ContactItem>
-              <ContactItem>
-                <ContactIcon>✉️</ContactIcon>
-                <ContactValue>
-                  <ContactLink href="mailto:Mantrasetu01@gmail.com">
-                    Mantrasetu01@gmail.com
-                  </ContactLink>
-                </ContactValue>
-              </ContactItem>
-              <ContactItem>
-                <ContactIcon>📞</ContactIcon>
-                <ContactValue>
-                  <ContactLink href="tel:+97xxxxx">
-                    +97 xxxxx xxxxx
-                  </ContactLink>
-                </ContactValue>
-              </ContactItem>
-            </ContactInfo>
-          </FooterRight>
-        </FooterContent>
+          {/* Footer Links */}
+          {footerSections.map((section) => (
+            <div key={section.title}>
+              <h4 className="font-semibold text-foreground mb-4">{section.title}</h4>
+              <ul className="space-y-3">
+                {section.links.map((link) => (
+                  <li key={link.label}>
+                    {link.label === "Join as Pandit" ? (
+                      <button 
+                        onClick={() => handleLinkClick(link)}
+                        className="text-muted-foreground hover:text-primary transition-colors text-left"
+                        data-testid={`footer-link-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
+                      >
+                        {link.label}
+                      </button>
+                    ) : (
+                      <a 
+                        href={link.href}
+                        onClick={(e) => {
+                          if (link.href.startsWith('#')) {
+                            e.preventDefault();
+                            handleLinkClick(link);
+                          }
+                        }}
+                        className="text-muted-foreground hover:text-primary transition-colors"
+                        data-testid={`footer-link-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
+                      >
+                        {link.label}
+                      </a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
 
-        <FooterBottom>
-          <ButtonGroup>
-            <ContactButton as={Link} to="/contact">
-              Contact Us Today
-            </ContactButton>
-            <PanditButton as={Link} to="/pandit-onboarding">
-              Register as Pandit Ji
-            </PanditButton>
-          </ButtonGroup>
-        </FooterBottom>
+        {/* Newsletter Signup */}
+        <div className="border-t border-border pt-8 mb-8">
+          <div className="max-w-md">
+            <h4 className="font-semibold text-foreground mb-2">Stay Connected</h4>
+            <p className="text-muted-foreground mb-4 text-sm">
+              Get spiritual insights, festival updates, and exclusive offers
+            </p>
+            <div className="flex gap-2">
+              <Input 
+                placeholder="Enter your email" 
+                type="email"
+                className="flex-1"
+                data-testid="input-newsletter-email"
+              />
+              <Button data-testid="button-subscribe">
+                Subscribe
+              </Button>
+            </div>
+          </div>
+        </div>
 
-        <FooterCopyright>
-          <CopyrightText>
-            © 2024 MantraSetu. All rights reserved. | 
-            <FooterLink to="/privacy"> Privacy Policy</FooterLink> | 
-            <FooterLink to="/terms"> Terms of Service</FooterLink>
-          </CopyrightText>
-        </FooterCopyright>
-      </Container>
-    </FooterContainer>
+        {/* Bottom Section */}
+        <div className="border-t border-border pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            {/* Copyright */}
+            <div className="text-muted-foreground text-sm">
+              © 2025 MantraSetu Solutions Pvt. Ltd. All rights reserved.
+            </div>
+
+            {/* Social Links */}
+            <div className="flex items-center space-x-4">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                  aria-label={social.label}
+                  data-testid={`social-link-${social.label.toLowerCase()}`}
+                >
+                  <social.icon className="w-5 h-5" />
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
   );
-};
-
-const FooterContainer = styled.footer`
-  background: 
-    radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 2px, transparent 2px),
-    radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 2px, transparent 2px),
-    linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
-  background-size: 50px 50px, 50px 50px, 100% 100%;
-  color: ${({ theme }) => theme.colors.white};
-  padding: ${({ theme }) => theme.spacing[16]} 0 ${({ theme }) => theme.spacing[8]};
-  position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #ff8c42, #ff6b35);
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 6px;
-    background: #d84315;
-  }
-
-  @media (max-width: 768px) {
-    padding: ${({ theme }) => theme.spacing[12]} 0 ${({ theme }) => theme.spacing[6]};
-  }
-`;
-
-const Container = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 ${({ theme }) => theme.spacing[4]};
-`;
-
-const FooterContent = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: ${({ theme }) => theme.spacing[12]};
-  margin-bottom: ${({ theme }) => theme.spacing[12]};
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: ${({ theme }) => theme.spacing[8]};
-    text-align: center;
-  }
-`;
-
-const FooterLeft = styled.div`
-  color: #333;
-`;
-
-const FooterLogo = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing[6]};
-`;
-
-const FooterDescription = styled.p`
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  line-height: 1.6;
-  color: #555;
-  max-width: 400px;
-
-  @media (max-width: 768px) {
-    max-width: 100%;
-  }
-`;
-
-const FooterCenter = styled.div``;
-
-const FooterTitle = styled.h3`
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-  color: #c62828;
-  text-decoration: underline;
-`;
-
-const FooterLinks = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing[3]};
-
-  @media (max-width: 768px) {
-    align-items: center;
-  }
-`;
-
-const FooterLink = styled(Link)`
-  color: #333;
-  text-decoration: none;
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  transition: color ${({ theme }) => theme.transitions.fast};
-
-  &:hover {
-    color: #c62828;
-  }
-`;
-
-const FooterRight = styled.div``;
-
-const ContactInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing[4]};
-`;
-
-const ContactItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing[2]};
-  margin-bottom: ${({ theme }) => theme.spacing[3]};
-
-  @media (max-width: 768px) {
-    justify-content: center;
-  }
-`;
-
-const ContactIcon = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-`;
-
-const ContactLabel = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  opacity: 0.9;
-`;
-
-const ContactValue = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  color: #333;
-`;
-
-const ContactLink = styled.a`
-  color: #333;
-  text-decoration: none;
-  transition: color ${({ theme }) => theme.transitions.fast};
-
-  &:hover {
-    color: #c62828;
-  }
-`;
-
-const FooterBottom = styled.div`
-  text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing[8]};
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing[4]};
-  justify-content: center;
-  align-items: center;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: ${({ theme }) => theme.spacing[3]};
-  }
-`;
-
-const ContactButton = styled(Button)`
-  background: #d32f2f;
-  color: ${({ theme }) => theme.colors.white};
-  border: none;
-  padding: ${({ theme }) => theme.spacing[4]} ${({ theme }) => theme.spacing[8]};
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  transition: all ${({ theme }) => theme.transitions.normal};
-
-  &:hover {
-    background: #b71c1c;
-    transform: translateY(-2px);
-    box-shadow: ${({ theme }) => theme.shadows.lg};
-  }
-`;
-
-const PanditButton = styled(Button)`
-  background: #ff6b35;
-  color: ${({ theme }) => theme.colors.white};
-  border: none;
-  padding: ${({ theme }) => theme.spacing[4]} ${({ theme }) => theme.spacing[8]};
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  transition: all ${({ theme }) => theme.transitions.normal};
-
-  &:hover {
-    background: #e55a2b;
-    transform: translateY(-2px);
-    box-shadow: ${({ theme }) => theme.shadows.lg};
-  }
-`;
-
-const FooterCopyright = styled.div`
-  text-align: center;
-  padding-top: ${({ theme }) => theme.spacing[6]};
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-`;
-
-const CopyrightText = styled.p`
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  color: #666;
-`;
-
-export default Footer;
+}

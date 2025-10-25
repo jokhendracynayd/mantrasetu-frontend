@@ -1,531 +1,347 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-
-import Button from '../components/Common/Button';
-import LoadingSpinner from '../components/Common/LoadingSpinner';
-import type { Service } from '../types';
-import { serviceAPI } from '../services/api';
+import { useParams, useNavigate } from 'react-router-dom';
+import { 
+  Calendar, 
+  Clock, 
+  MapPin, 
+  CheckCircle2, 
+  Phone, 
+  Mail,
+  Heart,
+  Share2,
+  BookOpen,
+  Gift,
+  Sparkles,
+  Users,
+  ArrowLeft
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { getPujaById } from '../data/dummyPujas';
+import type { PujaDetail } from '../data/dummyPujas';
 
 const ServiceDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [service, setService] = useState<Service | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedPandit, setSelectedPandit] = useState<string>('');
-
-  // Fetch service data
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [puja, setPuja] = useState<PujaDetail | null>(null);
+  
   useEffect(() => {
-    const fetchService = async () => {
-      if (!id) {
-        setError('Service ID is required');
-        setLoading(false);
-        return;
+    if (id) {
+      const pujaData = getPujaById(id);
+      if (pujaData) {
+        setPuja(pujaData);
+      } else {
+        // If puja not found, redirect to services page
+        navigate('/services');
       }
-
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await serviceAPI.getService(id);
-        setService(response.data);
-      } catch (error: any) {
-        console.error('Error fetching service:', error);
-        setError(error.response?.data?.message || 'Failed to fetch service');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchService();
-  }, [id]);
-
-  // Loading state
-  if (loading) {
+    }
+  }, [id, navigate]);
+  
+  if (!puja) {
     return (
-      <ServiceContainer>
-        <Container>
-          <LoadingContainer>
-            <LoadingSpinner size="large" />
-            <LoadingText>Loading service details...</LoadingText>
-          </LoadingContainer>
-        </Container>
-      </ServiceContainer>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-lg text-muted-foreground">Loading puja details...</p>
+        </div>
+      </div>
     );
   }
-
-  // Error state
-  if (error || !service) {
-    return (
-      <ServiceContainer>
-        <Container>
-          <NotFoundContainer>
-            <NotFoundTitle>Service Not Found</NotFoundTitle>
-            <NotFoundDescription>
-              {error || 'The service you\'re looking for doesn\'t exist or has been removed.'}
-            </NotFoundDescription>
-            <Button variant="primary" onClick={() => navigate('/services')}>
-              Back to Services
-            </Button>
-          </NotFoundContainer>
-        </Container>
-      </ServiceContainer>
-    );
-  }
-
-  const handleBookService = () => {
-    if (selectedPandit) {
-      navigate(`/bookings?service=${service.id}&pandit=${selectedPandit}`);
+  
+  const handleBooking = () => {
+    navigate(`/bookings?service=${puja.id}`);
+  };
+  
+  const handleContact = (type: 'call' | 'email') => {
+    if (type === 'call') {
+      window.location.href = 'tel:+919876543210';
     } else {
-      navigate(`/bookings?service=${service.id}`);
+      window.location.href = 'mailto:support@mantrasetu.com';
     }
   };
-
-  const getServiceIcon = (category: string) => {
-    switch (category) {
-      case 'pooja': return '🕉️';
-      case 'astrology': return '🔮';
-      case 'virtual': return '💻';
-      case 'products': return '🛍️';
-      default: return '✨';
-    }
-  };
-
 
   return (
-    <ServiceContainer>
-      <Container>
-        <ServiceHeader>
-          <Breadcrumb>
-            <BreadcrumbLink to="/services">Services</BreadcrumbLink>
-            <BreadcrumbSeparator>›</BreadcrumbSeparator>
-            <BreadcrumbCurrent>{service.name}</BreadcrumbCurrent>
-          </Breadcrumb>
+    <div className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-r from-orange-700 to-orange-600 text-white py-12">
+        <div className="container mx-auto px-4">
+          {/* Back Button */}
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 text-white/90 hover:text-white mb-6 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Back to Services</span>
+          </button>
           
-          <ServiceTitle>{service.name}</ServiceTitle>
-          <ServiceSubtitle>{service.description}</ServiceSubtitle>
-        </ServiceHeader>
-
-        <ServiceContent>
-          <ServiceMain>
-            <ServiceImage>
-              {service.imageUrl ? (
-                <img src={service.imageUrl} alt={service.name} />
-              ) : (
-                <ServiceIcon>{getServiceIcon(service.category)}</ServiceIcon>
-              )}
-              <CategoryBadge category={service.category}>
-                {service.category.charAt(0).toUpperCase() + service.category.slice(1)}
-              </CategoryBadge>
-              <VirtualBadge isVirtual={service.isVirtual}>
-                {service.isVirtual ? 'Virtual' : 'In-Person'}
-              </VirtualBadge>
-            </ServiceImage>
-
-            <ServiceDetails>
-              <DetailGrid>
-                <DetailItem>
-                  <DetailLabel>Duration</DetailLabel>
-                  <DetailValue>{service.durationMinutes > 0 ? `${service.durationMinutes} minutes` : 'N/A'}</DetailValue>
-                </DetailItem>
-                <DetailItem>
-                  <DetailLabel>Price</DetailLabel>
-                  <DetailValue>₹{service.basePrice}</DetailValue>
-                </DetailItem>
-                <DetailItem>
-                  <DetailLabel>Type</DetailLabel>
-                  <DetailValue>{service.isVirtual ? 'Virtual' : 'In-Person'}</DetailValue>
-                </DetailItem>
-                <DetailItem>
-                  <DetailLabel>Category</DetailLabel>
-                  <DetailValue>{service.category.charAt(0).toUpperCase() + service.category.slice(1)}</DetailValue>
-                </DetailItem>
-              </DetailGrid>
-
-              <DetailedDescription>
-                <h3>About This Service</h3>
-                <p>{service.description}</p>
-              </DetailedDescription>
-
-              {service.instructions && (
-                <RequirementsSection>
-                  <h3>Instructions</h3>
-                  <RequirementsList>
-                    <RequirementItem>
-                      <RequirementIcon>•</RequirementIcon>
-                      {service.instructions}
-                    </RequirementItem>
-                  </RequirementsList>
-                </RequirementsSection>
-              )}
-            </ServiceDetails>
-          </ServiceMain>
-
-          <ServiceSidebar>
-            <BookingCard>
-              <BookingTitle>Book This Service</BookingTitle>
-              <BookingPrice>₹{service.basePrice}</BookingPrice>
-              <BookingDuration>{service.durationMinutes > 0 ? `${service.durationMinutes} minutes` : 'N/A'}</BookingDuration>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Left Content */}
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-3 mb-4">
+                <BookOpen className="w-6 h-6" />
+                <span className="text-sm font-medium">Religious</span>
+              </div>
               
-              <PanditSelection>
-                <PanditLabel>Select Pandit</PanditLabel>
-                <PanditOption
-                  selected={selectedPandit === 'default'}
-                  onClick={() => setSelectedPandit('default')}
-                >
-                  <PanditInfo>
-                    <PanditName>Available Pandits</PanditName>
-                    <PanditSpecialization>Expert in {service.category} services</PanditSpecialization>
-                    <PanditRating>⭐ 4.8+ rating</PanditRating>
-                  </PanditInfo>
-                </PanditOption>
-              </PanditSelection>
-
-              <BookingActions>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">{puja.name}</h1>
+              
+              <p className="text-lg text-orange-100 mb-6 max-w-2xl">
+                {puja.description}
+              </p>
+              
+              <div className="flex flex-wrap gap-6 text-sm">
+                <div className="flex items-center gap-2">
+                  <Clock className="w-5 h-5" />
+                  <span>{puja.duration}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-5 h-5" />
+                  <span>{puja.locationType}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  <span>{puja.difficulty}</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Right Price Card */}
+            <div className="md:col-span-1">
+              <Card className="bg-white shadow-xl">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <p className="text-3xl font-bold text-foreground">₹{puja.price.toLocaleString()}</p>
+                      <p className="text-sm text-muted-foreground">inc</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setIsFavorite(!isFavorite)}
+                        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                      >
+                        <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
+                      </button>
+                      <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                        <Share2 className="w-5 h-5 text-gray-400" />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <Button 
+                    className="w-full mb-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+                    size="lg"
+                    onClick={handleBooking}
+                  >
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Book This Puja
+                  </Button>
+                  
+                  <div className="grid grid-cols-2 gap-2 mb-4">
                 <Button
-                  variant="primary"
-                  size="large"
-                  fullWidth
-                  onClick={handleBookService}
-                >
-                  Book Now
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleContact('call')}
+                    >
+                      <Phone className="w-4 h-4 mr-1" />
+                      Call
                 </Button>
                 <Button
                   variant="outline"
-                  size="large"
-                  fullWidth
-                  onClick={() => navigate('/services')}
-                >
-                  Back to Services
+                      size="sm"
+                      onClick={() => handleContact('email')}
+                    >
+                      <Mail className="w-4 h-4 mr-1" />
+                      Email
+                    </Button>
+                  </div>
+                  
+                  {puja.isAvailable && (
+                    <div className="flex items-center justify-center gap-2 text-green-600 text-sm">
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Available for booking</span>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid md:grid-cols-3 gap-8 mt-10">
+          {/* Left Column - Main Content */}
+          <div className="md:col-span-2 space-y-8">
+            {/* About This Puja */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-primary" />
+                  About This Puja
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground leading-relaxed">
+                  {puja.longDescription}
+                </p>
+              </CardContent>
+            </Card>
+            
+            {/* Benefits & Blessings */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Gift className="w-5 h-5 text-primary" />
+                  Benefits & Blessings
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {puja.benefits.map((benefit, index) => (
+                    <div key={index} className="flex items-start gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">{benefit}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* What's Included */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                  What's Included
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {puja.included.map((item, index) => (
+                    <div key={index} className="flex items-start gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Requirements & Preparation */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-primary" />
+                  Requirements & Preparation
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  {puja.requirements.map((requirement, index) => (
+                    <li key={index} className="flex items-start gap-2 text-muted-foreground">
+                      <span className="text-orange-500 font-bold">•</span>
+                      <span>{requirement}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+          
+          {/* Right Column - Sidebar */}
+          <div className="md:col-span-1 space-y-6">
+            {/* Puja Details */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Puja Details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Duration</span>
+                  <span className="font-medium">{puja.duration}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Difficulty</span>
+                  <Badge variant="secondary" className="bg-green-100 text-green-700">
+                    {puja.difficulty}
+                  </Badge>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Location Type</span>
+                  <span className="font-medium text-right">{puja.locationType}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Pandit Required</span>
+                  <span className="font-medium">{puja.panditRequired ? 'Yes' : 'No'}</span>
+                </div>
+                <div className="pt-4 border-t">
+                  <p className="text-sm font-medium text-muted-foreground mb-1">Location Details</p>
+                  <p className="text-sm">{puja.locationDetails}</p>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Related Topics */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Related Topics</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {puja.relatedTopics.map((topic, index) => (
+                    <Badge 
+                      key={index} 
+                      variant="outline"
+                      className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                    >
+                      {topic}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Available Days */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Available Days</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-3 gap-2">
+                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+                    <div
+                      key={day}
+                      className={`p-2 text-center rounded-md text-sm font-medium ${
+                        puja.availableDays.includes(day)
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-gray-100 text-gray-400'
+                      }`}
+                    >
+                      {day}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Quick Contact */}
+            <Card className="bg-primary/5 border-primary/20">
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-2">Need Help?</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Our team is available to answer your questions about this puja.
+                </p>
+                <Button className="w-full" variant="default">
+                  Contact Support
                 </Button>
-              </BookingActions>
-            </BookingCard>
-          </ServiceSidebar>
-        </ServiceContent>
-      </Container>
-    </ServiceContainer>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
-
-const ServiceContainer = styled.div`
-  min-height: 100vh;
-  background: ${({ theme }) => theme.colors.backgroundSecondary};
-  padding: ${({ theme }) => theme.spacing[8]} 0;
-`;
-
-const Container = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 ${({ theme }) => theme.spacing[4]};
-`;
-
-const ServiceHeader = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing[8]};
-`;
-
-const Breadcrumb = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing[2]};
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-`;
-
-const BreadcrumbLink = styled(Link)`
-  color: ${({ theme }) => theme.colors.primary};
-  text-decoration: none;
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-const BreadcrumbSeparator = styled.span`
-  color: ${({ theme }) => theme.colors.textSecondary};
-`;
-
-const BreadcrumbCurrent = styled.span`
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-`;
-
-const ServiceTitle = styled.h1`
-  font-size: ${({ theme }) => theme.fontSizes['4xl']};
-  font-weight: ${({ theme }) => theme.fontWeights.bold};
-  color: ${({ theme }) => theme.colors.textPrimary};
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-`;
-
-const ServiceSubtitle = styled.p`
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-  color: ${({ theme }) => theme.colors.textSecondary};
-  line-height: 1.6;
-`;
-
-const ServiceContent = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: ${({ theme }) => theme.spacing[8]};
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: ${({ theme }) => theme.spacing[6]};
-  }
-`;
-
-const ServiceMain = styled.div`
-  background: ${({ theme }) => theme.colors.white};
-  border-radius: ${({ theme }) => theme.borderRadius['2xl']};
-  padding: ${({ theme }) => theme.spacing[6]};
-  box-shadow: ${({ theme }) => theme.shadows.lg};
-`;
-
-const ServiceImage = styled.div`
-  height: 300px;
-  background: linear-gradient(135deg, ${({ theme }) => theme.colors.primary}20, ${({ theme }) => theme.colors.secondary}20);
-  border-radius: ${({ theme }) => theme.borderRadius.xl};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  margin-bottom: ${({ theme }) => theme.spacing[6]};
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-`;
-
-const ServiceIcon = styled.div`
-  font-size: 6rem;
-  opacity: 0.7;
-`;
-
-const CategoryBadge = styled.div<{ category: string }>`
-  position: absolute;
-  top: ${({ theme }) => theme.spacing[4]};
-  left: ${({ theme }) => theme.spacing[4]};
-  background: ${({ category }) => {
-    switch (category) {
-      case 'pooja': return '#ff6b35';
-      case 'astrology': return '#8b5cf6';
-      case 'virtual': return '#06b6d4';
-      case 'products': return '#10b981';
-      default: return '#6b7280';
-    }
-  }};
-  color: white;
-  padding: ${({ theme }) => theme.spacing[2]} ${({ theme }) => theme.spacing[3]};
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-`;
-
-const VirtualBadge = styled.div<{ isVirtual: boolean }>`
-  position: absolute;
-  top: ${({ theme }) => theme.spacing[4]};
-  right: ${({ theme }) => theme.spacing[4]};
-  background: ${({ isVirtual, theme }) => isVirtual ? theme.colors.info : theme.colors.success};
-  color: white;
-  padding: ${({ theme }) => theme.spacing[2]} ${({ theme }) => theme.spacing[3]};
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-`;
-
-const ServiceDetails = styled.div``;
-
-const DetailGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: ${({ theme }) => theme.spacing[4]};
-  margin-bottom: ${({ theme }) => theme.spacing[6]};
-`;
-
-const DetailItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing[1]};
-`;
-
-const DetailLabel = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-  color: ${({ theme }) => theme.colors.textSecondary};
-`;
-
-const DetailValue = styled.span`
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  color: ${({ theme }) => theme.colors.textPrimary};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-`;
-
-const DetailedDescription = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing[6]};
-
-  h3 {
-    font-size: ${({ theme }) => theme.fontSizes.xl};
-    font-weight: ${({ theme }) => theme.fontWeights.semibold};
-    color: ${({ theme }) => theme.colors.textPrimary};
-    margin-bottom: ${({ theme }) => theme.spacing[4]};
-  }
-
-  p {
-    color: ${({ theme }) => theme.colors.textSecondary};
-    line-height: 1.7;
-    white-space: pre-line;
-  }
-`;
-
-
-const RequirementsSection = styled.div`
-  h3 {
-    font-size: ${({ theme }) => theme.fontSizes.xl};
-    font-weight: ${({ theme }) => theme.fontWeights.semibold};
-    color: ${({ theme }) => theme.colors.textPrimary};
-    margin-bottom: ${({ theme }) => theme.spacing[4]};
-  }
-`;
-
-const RequirementsList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing[3]};
-`;
-
-const RequirementItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing[3]};
-  color: ${({ theme }) => theme.colors.textSecondary};
-`;
-
-const RequirementIcon = styled.span`
-  color: ${({ theme }) => theme.colors.primary};
-  font-weight: ${({ theme }) => theme.fontWeights.bold};
-`;
-
-const ServiceSidebar = styled.div``;
-
-const BookingCard = styled.div`
-  background: ${({ theme }) => theme.colors.white};
-  border-radius: ${({ theme }) => theme.borderRadius['2xl']};
-  padding: ${({ theme }) => theme.spacing[6]};
-  box-shadow: ${({ theme }) => theme.shadows.lg};
-  position: sticky;
-  top: ${({ theme }) => theme.spacing[8]};
-`;
-
-const BookingTitle = styled.h3`
-  font-size: ${({ theme }) => theme.fontSizes.xl};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  color: ${({ theme }) => theme.colors.textPrimary};
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-`;
-
-const BookingPrice = styled.div`
-  font-size: ${({ theme }) => theme.fontSizes['2xl']};
-  font-weight: ${({ theme }) => theme.fontWeights.bold};
-  color: ${({ theme }) => theme.colors.primary};
-  margin-bottom: ${({ theme }) => theme.spacing[2]};
-`;
-
-const BookingDuration = styled.div`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  margin-bottom: ${({ theme }) => theme.spacing[6]};
-`;
-
-const PanditSelection = styled.div`
-  margin-bottom: ${({ theme }) => theme.spacing[6]};
-`;
-
-const PanditLabel = styled.div`
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-  color: ${({ theme }) => theme.colors.textSecondary};
-  margin-bottom: ${({ theme }) => theme.spacing[3]};
-`;
-
-const PanditOption = styled.div<{ selected: boolean }>`
-  padding: ${({ theme }) => theme.spacing[4]};
-  border: 2px solid ${({ selected, theme }) => selected ? theme.colors.primary : theme.colors.gray300};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  cursor: pointer;
-  transition: all ${({ theme }) => theme.transitions.fast};
-  background: ${({ selected, theme }) => selected ? `${theme.colors.primary}10` : 'transparent'};
-
-  &:hover {
-    border-color: ${({ theme }) => theme.colors.primary};
-  }
-`;
-
-const PanditInfo = styled.div``;
-
-const PanditName = styled.div`
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  color: ${({ theme }) => theme.colors.textPrimary};
-  margin-bottom: ${({ theme }) => theme.spacing[1]};
-`;
-
-const PanditSpecialization = styled.div`
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  color: ${({ theme }) => theme.colors.textSecondary};
-  margin-bottom: ${({ theme }) => theme.spacing[1]};
-`;
-
-const PanditRating = styled.div`
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  color: ${({ theme }) => theme.colors.textSecondary};
-`;
-
-const BookingActions = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing[3]};
-`;
-
-const NotFoundContainer = styled.div`
-  text-align: center;
-  padding: ${({ theme }) => theme.spacing[12]};
-  background: ${({ theme }) => theme.colors.white};
-  border-radius: ${({ theme }) => theme.borderRadius['2xl']};
-  box-shadow: ${({ theme }) => theme.shadows.lg};
-`;
-
-const NotFoundTitle = styled.h2`
-  font-size: ${({ theme }) => theme.fontSizes['2xl']};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
-  color: ${({ theme }) => theme.colors.textPrimary};
-  margin-bottom: ${({ theme }) => theme.spacing[4]};
-`;
-
-const NotFoundDescription = styled.p`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  margin-bottom: ${({ theme }) => theme.spacing[6]};
-`;
-
-const LoadingContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: ${({ theme }) => theme.spacing[12]};
-  background: ${({ theme }) => theme.colors.white};
-  border-radius: ${({ theme }) => theme.borderRadius['2xl']};
-  box-shadow: ${({ theme }) => theme.shadows.lg};
-`;
-
-const LoadingText = styled.p`
-  margin-top: ${({ theme }) => theme.spacing[4]};
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-`;
 
 export default ServiceDetailPage;
