@@ -133,7 +133,7 @@ const SectionTitle = styled.h2`
   font-size: ${({ theme }) => theme.fontSizes['4xl']};
   font-weight: ${({ theme }) => theme.fontWeights.bold};
   color: ${({ theme }) => theme.colors.deepRed};
-  font-family: 'Playfair Display', 'Times New Roman', serif;
+  // font-family: 'Playfair Display', 'Times New Roman', serif;
   text-shadow: 1px 1px 2px rgba(255, 215, 0, 0.3);
   position: relative;
   z-index: 1;
@@ -218,7 +218,7 @@ const FeatureTitle = styled.h3`
   font-weight: ${({ theme }) => theme.fontWeights.semibold};
   color: ${({ theme }) => theme.colors.deepRed};
   margin-bottom: ${({ theme }) => theme.spacing[4]};
-  font-family: 'Playfair Display', 'Times New Roman', serif;
+  // font-family: 'Playfair Display', 'Times New Roman', serif;
 `;
 
 const FeatureDescription = styled.p`

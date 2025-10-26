@@ -67,13 +67,13 @@ const ServiceDetailPage: React.FC = () => {
       <div className="bg-gradient-to-r from-orange-700 to-orange-600 text-white py-12">
         <div className="container mx-auto px-4">
           {/* Back Button */}
-          <button
+          {/* <button
             onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-white/90 hover:text-white mb-6 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>Back to Services</span>
-          </button>
+          </button> */}
           
           <div className="grid md:grid-cols-3 gap-8">
             {/* Left Content */}

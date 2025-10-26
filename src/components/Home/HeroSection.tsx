@@ -152,7 +152,7 @@ const HeroTitle = styled.h1`
   font-weight: ${({ theme }) => theme.fontWeights.bold};
   margin-bottom: ${({ theme }) => theme.spacing[6]};
   line-height: 1.2;
-  font-family: 'Playfair Display', 'Times New Roman', serif;
+  // font-family: 'Playfair Display', 'Times New Roman', serif;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   position: relative;
   z-index: 1;

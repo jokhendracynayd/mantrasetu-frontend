@@ -9,9 +9,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import LoadingSpinner from '../components/Common/LoadingSpinner';
 import { getLargeServicePlaceholder, getPanditPlaceholder } from '../utils/placeholder';
-import { Calendar, Clock, Sparkles, Star, Search, MapPin, Video } from 'lucide-react';
+import { Calendar, Clock, Sparkles, Star, Search, MapPin, Video, Filter, ChevronDown, Grid3X3, List } from 'lucide-react';
 
 // Dummy data for services
 const dummyServices: Service[] = [
@@ -126,7 +132,7 @@ interface Service {
   category: string;
   subcategory?: string;
   durationMinutes: number;
-  basePrice: number;
+  basePrice: number | string;
   isVirtual: boolean;
   requiresSamagri: boolean;
   instructions?: string;
@@ -137,14 +143,17 @@ interface Service {
   updatedAt: string;
 }
 
+type SortOption = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc' | 'duration-asc' | 'duration-desc';
+
 const ServicesPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { services, isLoading, error } = useSelector((state: RootState) => state.booking);
   const [searchParams] = useSearchParams();
   const panditId = searchParams.get('panditId');
-  
+
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [sortOption, setSortOption] = useState<SortOption>('name-asc');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [apiServices, setApiServices] = useState<Service[]>([]);
   const [isLoadingServices, setIsLoadingServices] = useState<boolean>(true);
@@ -178,9 +187,9 @@ const ServicesPage: React.FC = () => {
           setIsLoadingPandit(true);
           // For now, we'll use the pandit data from the homepage API
           // In a real app, you'd have a dedicated pandit detail API
-          const response = await fetch(`${import.meta.env.VITE_API_URL|| 'http://localhost:3000/api/v1'}/homepage`);
+          const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1'}/homepage`);
           const data = await response.json();
-          
+
           if (data.success && data.data.featuredPandits) {
             const pandit = data.data.featuredPandits.find((p: any) => p.id === panditId);
             setSelectedPandit(pandit || null);
@@ -212,13 +221,34 @@ const ServicesPage: React.FC = () => {
   // Use API data if available, fallback to dummy data
   const servicesToDisplay = apiServices.length > 0 ? apiServices : dummyServices;
 
+  // Filter services
   const filteredServices = servicesToDisplay.filter(service => {
     const matchesCategory = selectedCategory === 'all' || service.category === selectedCategory;
-    const matchesSearch = searchQuery === '' || 
+    const matchesSearch = searchQuery === '' ||
       service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       service.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (service.tags && service.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())));
     return matchesCategory && matchesSearch;
+  });
+
+  // Sort services
+  const sortedServices = [...filteredServices].sort((a, b) => {
+    switch (sortOption) {
+      case 'name-asc':
+        return a.name.localeCompare(b.name);
+      case 'name-desc':
+        return b.name.localeCompare(a.name);
+      case 'price-asc':
+        return Number(a.basePrice) - Number(b.basePrice);
+      case 'price-desc':
+        return Number(b.basePrice) - Number(a.basePrice);
+      case 'duration-asc':
+        return a.durationMinutes - b.durationMinutes;
+      case 'duration-desc':
+        return b.durationMinutes - a.durationMinutes;
+      default:
+        return 0;
+    }
   });
 
   const handleBookService = (serviceId: string) => {
@@ -274,11 +304,10 @@ const ServicesPage: React.FC = () => {
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`w-4 h-4 ${
-                            i < Math.floor(selectedPandit.rating)
+                          className={`w-4 h-4 ${i < Math.floor(selectedPandit.rating)
                               ? 'fill-yellow-400 text-yellow-400'
                               : 'text-gray-300'
-                          }`}
+                            }`}
                         />
                       ))}
                     </div>
@@ -308,70 +337,112 @@ const ServicesPage: React.FC = () => {
           </Card>
         )}
 
-        {/* Header Section */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-4">
-            {selectedPandit ? `Services by ${selectedPandit.name}` : 'Our Spiritual Services'}
-          </h1>
-          <p className="text-lg text-muted-foreground mb-8">
-            {selectedPandit ? `Book services with ${selectedPandit.name}` : 'Discover our comprehensive range of authentic spiritual services'}
-          </p>
-          
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-8">
-            <div className="bg-white rounded-lg p-4 shadow-sm border">
-              <p className="text-3xl font-bold text-primary">{servicesToDisplay.length}</p>
-              <p className="text-sm text-muted-foreground">Total Services</p>
+        {/* Header Section - Orange Background */}
+        <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white py-16 mb-8 relative left-1/2 w-screen -translate-x-1/2">
+          <div className="container mx-auto px-4 text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              {selectedPandit ? `Services by ${selectedPandit.name}` : 'Sacred Pujas & Ceremonies'}
+            </h1>
+            <p className="text-lg md:text-xl text-orange-100 mb-8 max-w-3xl mx-auto">
+              {selectedPandit ? `Book services with ${selectedPandit.name}` : 'Discover authentic Vedic pujas and ceremonies performed by experienced pandits for your spiritual well-being'}
+            </p>
+          </div>
+        </div>
+
+        {/* Search and Filter Section - White Background */}
+        <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+          <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
+            <div className="flex gap-4">
+              {/* Search Bar */}
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search pujas..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 h-12 w-full"
+                />
+              </div>
+              {/* Filter Dropdowns */}
+              <div className="flex gap-3">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="h-12 px-4 rounded-md !border-[#c9bfb6] border-[1px]">
+                      <Filter className="w-4 h-4 mr-2" />
+                      {selectedCategory === 'all' ? 'All Categories' : selectedCategory}
+                      <ChevronDown className="w-4 h-4 ml-2" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    <DropdownMenuItem onClick={() => setSelectedCategory('all')}>
+                      All Categories
+                    </DropdownMenuItem>
+                    {categories.filter(c => c.value !== 'all').map((category) => (
+                      <DropdownMenuItem 
+                        key={category.value}
+                        onClick={() => setSelectedCategory(category.value)}
+                      >
+                        {category.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="h-12 px-4 !border-[#c9bfb6] border-[1px]">
+                      {sortOption === 'name-asc' ? 'Name (A-Z)' : 
+                       sortOption === 'name-desc' ? 'Name (Z-A)' :
+                       sortOption === 'price-asc' ? 'Price: Low to High' :
+                       sortOption === 'price-desc' ? 'Price: High to Low' :
+                       sortOption === 'duration-asc' ? 'Duration: Shortest First' :
+                       'Duration: Longest First'}
+                      <ChevronDown className="w-4 h-4 ml-2" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    <DropdownMenuItem onClick={() => setSortOption('name-asc')}>
+                      Name (A-Z)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortOption('name-desc')}>
+                      Name (Z-A)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortOption('price-asc')}>
+                      Price: Low to High
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortOption('price-desc')}>
+                      Price: High to Low
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortOption('duration-asc')}>
+                      Duration: Shortest First
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setSortOption('duration-desc')}>
+                      Duration: Longest First
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
-            <div className="bg-white rounded-lg p-4 shadow-sm border">
-              <p className="text-3xl font-bold text-primary">
-                {servicesToDisplay.filter(s => s.category === 'POOJA').length}
-              </p>
-              <p className="text-sm text-muted-foreground">Poojas</p>
-            </div>
-            <div className="bg-white rounded-lg p-4 shadow-sm border">
-              <p className="text-3xl font-bold text-primary">
-                {servicesToDisplay.filter(s => s.category === 'ASTROLOGY').length}
-              </p>
-              <p className="text-sm text-muted-foreground">Astrology</p>
-            </div>
-            <div className="bg-white rounded-lg p-4 shadow-sm border">
-              <p className="text-3xl font-bold text-primary">
-                {servicesToDisplay.filter(s => s.isVirtual).length}
-              </p>
-              <p className="text-sm text-muted-foreground">Virtual</p>
+
+
+            {/* View Toggle */}
+            <div className="flex gap-2">
+              <Button variant="outline" size="icon" className="h-12 w-12">
+                <Grid3X3 className="w-4 h-4" />
+              </Button>
+              <Button variant="outline" size="icon" className="h-12 w-12">
+                <List className="w-4 h-4" />
+              </Button>
             </div>
           </div>
         </div>
 
-        {/* Search and Filter Section */}
-        <div className="mb-8 space-y-4">
-          {/* Search Bar */}
-          <div className="relative max-w-md mx-auto">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Search services..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 h-12"
-            />
-          </div>
-          
-          {/* Category Filters */}
-          <div className="flex flex-wrap justify-center gap-2">
-            {categories.map((category) => (
-              <Button
-                key={category.value}
-                variant={selectedCategory === category.value ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setSelectedCategory(category.value)}
-                className="rounded-full"
-              >
-                {category.label}
-              </Button>
-            ))}
-          </div>
+        {/* Results Count */}
+        <div className="mb-6">
+          <p className="text-lg font-medium text-gray-700">
+            {sortedServices.length} {sortedServices.length === 1 ? 'Puja' : 'Pujas'} Found
+          </p>
         </div>
 
         {/* Services Grid */}
@@ -384,21 +455,21 @@ const ServicesPage: React.FC = () => {
             <p className="text-red-500 mb-4">{servicesError}</p>
             <Button onClick={() => window.location.reload()}>Retry</Button>
           </div>
-        ) : filteredServices.length > 0 ? (
+        ) : sortedServices.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
-            {filteredServices.map((service) => (
-              <Card 
+            {sortedServices.map((service) => (
+              <Card
                 key={service.id}
                 className="hover-elevate group border-primary/20 h-full flex flex-col"
               >
-                <CardHeader 
+                <CardHeader
                   className="p-0 flex-shrink-0 cursor-pointer"
                   onClick={() => navigate(`/services/${service.id}`)}
                 >
                   <div className="relative w-full h-48 rounded-t-lg overflow-hidden">
                     {service.imageUrl ? (
-                      <img 
-                        src={service.imageUrl} 
+                      <img
+                        src={service.imageUrl}
                         alt={service.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
@@ -407,14 +478,14 @@ const ServicesPage: React.FC = () => {
                         <span className="text-6xl">{getServiceIcon(service.category)}</span>
                       </div>
                     )}
-                    
+
                     {/* Category Badge */}
                     <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
                       {service.category}
                     </Badge>
-                    
+
                     {/* Virtual/In-Person Badge */}
-                    <Badge 
+                    <Badge
                       variant={service.isVirtual ? 'default' : 'secondary'}
                       className="absolute top-3 right-3 gap-1"
                     >
@@ -432,8 +503,8 @@ const ServicesPage: React.FC = () => {
                     </Badge>
                   </div>
                 </CardHeader>
-                
-                <CardContent 
+
+                <CardContent
                   className="p-4 flex-grow flex flex-col cursor-pointer"
                   onClick={() => navigate(`/services/${service.id}`)}
                 >
@@ -441,11 +512,11 @@ const ServicesPage: React.FC = () => {
                     <Sparkles className="w-4 h-4 text-primary" />
                     {service.name}
                   </CardTitle>
-                  
+
                   <p className="text-muted-foreground text-sm mb-3 flex-grow line-clamp-3">
                     {service.description}
                   </p>
-                  
+
                   <div className="space-y-2 mb-4 flex-shrink-0">
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       <Clock className="w-3 h-3" />
@@ -457,8 +528,8 @@ const ServicesPage: React.FC = () => {
                     {service.tags && service.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1">
                         {service.tags.slice(0, 3).map((tag: string) => (
-                          <span 
-                            key={tag} 
+                          <span
+                            key={tag}
                             className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full"
                           >
                             {tag}
@@ -467,9 +538,9 @@ const ServicesPage: React.FC = () => {
                       </div>
                     )}
                   </div>
-                  
-                  <Button 
-                    variant="outline" 
+
+                  <Button
+                    variant="outline"
                     size="sm"
                     className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors mt-auto"
                     onClick={(e) => {
@@ -489,7 +560,7 @@ const ServicesPage: React.FC = () => {
             <p className="text-muted-foreground text-lg mb-4">
               No services found matching your criteria.
             </p>
-            <Button 
+            <Button
               variant="outline"
               onClick={() => {
                 setSearchQuery('');

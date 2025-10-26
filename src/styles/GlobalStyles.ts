@@ -79,12 +79,12 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   /* Button reset */
-  button {
-    border: none;
-    background: none;
-    cursor: pointer;
-    font-family: inherit;
-  }
+  // button {
+  //   border: none;
+  //   background: none;
+  //   cursor: pointer;
+  //   font-family: inherit;
+  // }
 
   /* Input reset */
   input, textarea, select {
@@ -115,7 +115,7 @@ export const GlobalStyles = createGlobalStyle`
     font-weight: 600;
     line-height: 1.2;
     margin-bottom: 0.5rem;
-    font-family: 'Playfair Display', 'Times New Roman', serif;
+    // font-family: 'Playfair Display', 'Times New Roman', serif;
   }
   
   /* Sanskrit text styling */
@@ -125,7 +125,7 @@ export const GlobalStyles = createGlobalStyle`
   }
   
   .vedic-title {
-    font-family: 'Playfair Display', 'Times New Roman', serif;
+    // font-family: 'Playfair Display', 'Times New Roman', serif;
     color: #8B0000;
     text-shadow: 1px 1px 2px rgba(255, 215, 0, 0.3);
   }
