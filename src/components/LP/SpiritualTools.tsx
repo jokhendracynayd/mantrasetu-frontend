@@ -1,13 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { ArrowRight } from "lucide-react";
-import toolsImage from "@assets/generated_images/Traditional_spiritual_astrology_tools_27c646aa.png";
-import panchangImage from "@assets/generated_images/Panchang_calendar_circular_icon_63796759.png";
-import muhuratImage from "@assets/generated_images/Muhurat_finder_timing_wheel_5474c405.png";
-import rashifalImage from "@assets/generated_images/Rashifal_horoscope_chart_wheel_79306805.png";
-import kundaliImage from "@assets/generated_images/Kundali_birth_chart_circular_46817752.png";
-import gemstoneImage from "@assets/generated_images/Gemstone_guide_circular_arrangement_5d7777b8.png";
-import choghadiyaImage from "@assets/generated_images/Choghadiya_time_wheel_circular_efad4c47.png";
+import toolsImage from "@assets/stock_Images/Traditional_spiritual_astrology_tools_27c646aa.webp";
+import panchangImage from "@assets/stock_Images/Panchang_calendar_circular_icon_63796759.webp";
+import muhuratImage from "@assets/stock_Images/Muhurat_finder_timing_wheel_5474c405.webp";
+import rashifalImage from "@assets/stock_Images/Rashifal_horoscope_chart_wheel_79306805.webp";
+import kundaliImage from "@assets/stock_Images/Kundali_birth_chart_circular_46817752.webp";
+import gemstoneImage from "@assets/stock_Images/Gemstone_guide_circular_arrangement_5d7777b8.webp";
+import choghadiyaImage from "@assets/stock_Images/Choghadiya_time_wheel_circular_efad4c47.webp";
 
 const tools = [
   {

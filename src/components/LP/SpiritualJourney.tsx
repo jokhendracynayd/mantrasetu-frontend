@@ -2,10 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Sparkles, BookOpen, Star, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import pujaImage from "@assets/generated_images/Traditional_puja_ceremony_setup_7ebf9aaf.png";
-import ritualImage from "@assets/generated_images/Sacred_ritual_ceremony_setup_aebce3f2.png";
-import libraryImage from "@assets/generated_images/Spiritual_library_ancient_texts_b406bd90.png";
-import astrologyImage from "@assets/generated_images/Astrology_tools_and_charts_9e6ee7f4.png";
+import pujaImage from "@assets/stock_Images/Traditional_puja_ceremony_setup_7ebf9aaf.webp";
+import ritualImage from "@assets/stock_Images/Sacred_ritual_ceremony_setup_aebce3f2.webp";
+import libraryImage from "@assets/stock_Images/Spiritual_library_ancient_texts_b406bd90.webp";
+import astrologyImage from "@assets/stock_Images/Astrology_tools_and_charts_9e6ee7f4.webp";
 
 const journeyServices = [
   {

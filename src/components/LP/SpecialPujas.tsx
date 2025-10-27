@@ -2,10 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button"; 
 import { Calendar, Star, ArrowRight, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import satyanarayanImage from "@assets/generated_images/Satyanarayan_Puja_ceremony_setup_d7708e08.png";
-import laxmiImage from "@assets/generated_images/Diwali_Laxmi_Puja_setup_e90668f2.png";
-import govardhanImage from "@assets/generated_images/Govardhan_Puja_food_offerings_3b646a1f.png";
-import bhaiDoojImage from "@assets/generated_images/Diwali_Laxmi_Puja_setup_e90668f2.png";
+import satyanarayanImage from "@assets/stock_Images/Satyanarayan_Puja_ceremony_setup_d7708e08.webp";
+import laxmiImage from "@assets/stock_Images/Diwali_Laxmi_Puja_setup_e90668f2.webp";
+import govardhanImage from "@assets/stock_Images/Govardhan_Puja_food_offerings_3b646a1f.webp";
+import bhaiDoojImage from "@assets/stock_Images/Diwali_Laxmi_Puja_setup_e90668f2.webp";
 
 const specialPujas = [
   {
