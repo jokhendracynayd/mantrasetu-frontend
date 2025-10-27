@@ -2,9 +2,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui
 import { Button } from "../ui/button";
 import { Calendar, Camera, Users, ArrowRight, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import panditImage from "@assets/generated_images/Traditional_Pandit_performing_ceremony_d032431f.png";
-import darshanImage from "@assets/generated_images/Temple_live_darshan_interior_4b181d61.png";
-import tourImage from "@assets/generated_images/Virtual_temple_tour_exterior_77b74f51.png";
+import panditImage from "@assets/stock_Images/Traditional_Pandit_performing_ceremony_d032431f.webp";
+import darshanImage from "@assets/stock_Images/Temple_live_darshan_interior_4b181d61.webp";
+import tourImage from "@assets/stock_Images/Virtual_temple_tour_exterior_77b74f51.webp";
 
 const services = [
   {

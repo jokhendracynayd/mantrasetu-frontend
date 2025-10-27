@@ -1,7 +1,7 @@
 // import { Button } from "@/components/ui/button";
 import { Calendar, Play, Users, BookOpen, Globe, Wifi } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import heroImage from "@assets/generated_images/Majestic_temple_complex_sunrise_3e522441.png";
+import heroImage from "@assets/stock_Images/Majestic_temple_complex_sunrise_3e522441.webp";
 import { Button } from "../ui/button";
 
 export default function Hero() {
