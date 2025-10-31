@@ -8,6 +8,8 @@ import rashifalImage from "@assets/stock_Images/Rashifal_horoscope_chart_wheel_7
 import kundaliImage from "@assets/stock_Images/Kundali_birth_chart_circular_46817752.webp";
 import gemstoneImage from "@assets/stock_Images/Gemstone_guide_circular_arrangement_5d7777b8.webp";
 import choghadiyaImage from "@assets/stock_Images/Choghadiya_time_wheel_circular_efad4c47.webp";
+import { useNavigate } from "react-router-dom";
+
 
 const tools = [
   {
@@ -15,14 +17,14 @@ const tools = [
     description: "Complete Hindu calendar with tithis, nakshatras, and festivals",
     action: "View Today's Panchang",
     image: panchangImage,
-    isAvailable: false
+    isAvailable: true
   },
   {
     title: "Muhurat Finder",
     description: "Find auspicious timings for important events and ceremonies",
     action: "Find Muhurat",
     image: muhuratImage,
-    isAvailable: false
+    isAvailable: true
   },
   {
     title: "Rashifal",
@@ -62,12 +64,28 @@ const mockTimeData = {
   muhurat: "Abhijit (11:48 - 12:36)"
 };
 
-export default function SpiritualTools() {
-  const handleToolClick = (toolTitle: string) => {
-    console.log(`${toolTitle} tool clicked`);
-    // todo: remove mock functionality - replace with actual tool functionality
-  };
 
+export default function SpiritualTools() {
+  const navigate = useNavigate();
+
+  const handleToolClick = (toolTitle: string) => {
+    if (toolTitle === "Panchang") {
+      navigate("/panchang");
+    } else if (toolTitle === "Muhurat Finder") {
+      navigate("/muhurat");
+    } else if (toolTitle === "Rashifal") {
+      navigate("/rashifal");
+    } else if (toolTitle === "Kundali Creation") {
+      navigate("/kundali");
+    } else if (toolTitle === "Gemstone Guide") {
+      navigate("/gemstones");
+    } else if (toolTitle === "Choghadiya") {
+      navigate("/choghadiya");
+    } else {
+      console.log(`${toolTitle} tool clicked`);
+      // TODO: remove mock functionality - replace with actual tool functionality
+    }
+  };
   return (
     <section id="tools" className="py-20">
       <div className="container mx-auto px-4">

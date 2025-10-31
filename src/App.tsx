@@ -46,6 +46,8 @@ import ScrollToTop from './components/ScrollToTop';
 // Types and Actions
 import type { RootState, AppDispatch } from "./store/store";
 import { validateToken } from './store/slices/authSlice';
+import Panchang from './components/services/Panchang';
+import MuhuratFinder from './components/services/MuhuratFinder';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -92,7 +94,19 @@ function App() {
           <HomePage />
         </Layout>
       } />
+
+      <Route path='/panchang' element={
+        <Layout>
+          <Panchang />
+        </Layout>
+      } />
       
+      <Route path='/muhurat' element={
+        <Layout>
+          <MuhuratFinder />
+        </Layout>
+      } />
+
       <Route path="/services" element={
         <Layout>
           <ServicesPage />
