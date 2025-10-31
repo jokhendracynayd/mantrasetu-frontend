@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { 
   FaEnvelope, 
-  FaPhone, 
   FaMapMarkerAlt, 
   FaClock, 
   FaFacebook, 
   FaTwitter, 
   FaInstagram, 
   FaYoutube,
-  FaWhatsapp,
   FaChevronDown,
   FaChevronUp
 } from 'react-icons/fa';
@@ -216,31 +214,9 @@ const ContactPage: React.FC = () => {
                   <FaEnvelope />
                 </InfoIcon>
                 <InfoContent>
-                  <InfoLabel>Email Us</InfoLabel>
-                  <InfoValue href="mailto:support@mantrasetu.com">support@mantrasetu.com</InfoValue>
+                  <InfoLabel>Email</InfoLabel>
+                  <InfoValue>support@mantrasetu.com</InfoValue>
                   <InfoDescription>We'll respond within 24 hours</InfoDescription>
-                </InfoContent>
-              </InfoItem>
-
-              <InfoItem>
-                <InfoIcon>
-                  <FaPhone />
-                </InfoIcon>
-                <InfoContent>
-                  <InfoLabel>Call Us</InfoLabel>
-                  <InfoValue href="tel:+919876543210">+91 98765 43210</InfoValue>
-                  <InfoDescription>Mon-Sat: 9 AM - 8 PM</InfoDescription>
-                </InfoContent>
-              </InfoItem>
-
-              <InfoItem>
-                <InfoIcon>
-                  <FaWhatsapp />
-                </InfoIcon>
-                <InfoContent>
-                  <InfoLabel>WhatsApp</InfoLabel>
-                  <InfoValue href="https://wa.me/919876543210">+91 98765 43210</InfoValue>
-                  <InfoDescription>Quick support via WhatsApp</InfoDescription>
                 </InfoContent>
               </InfoItem>
 
@@ -249,9 +225,9 @@ const ContactPage: React.FC = () => {
                   <FaMapMarkerAlt />
                 </InfoIcon>
                 <InfoContent>
-                  <InfoLabel>Visit Us</InfoLabel>
-                  <InfoValue>123 Spiritual Lane, Temple Road, Mumbai - 400001</InfoValue>
-                  <InfoDescription>Maharashtra, India</InfoDescription>
+                  <InfoLabel>Address</InfoLabel>
+                  <InfoValue>Bhopal, Madhya Pradesh</InfoValue>
+                  <InfoDescription>India</InfoDescription>
                 </InfoContent>
               </InfoItem>
 
@@ -260,9 +236,9 @@ const ContactPage: React.FC = () => {
                   <FaClock />
                 </InfoIcon>
                 <InfoContent>
-                  <InfoLabel>Business Hours</InfoLabel>
-                  <InfoValue>Monday - Saturday: 9:00 AM - 8:00 PM</InfoValue>
-                  <InfoDescription>Sunday: 10:00 AM - 6:00 PM</InfoDescription>
+                  <InfoLabel>Support Hours</InfoLabel>
+                  <InfoValue>24/7 Available</InfoValue>
+                  <InfoDescription>For urgent spiritual needs</InfoDescription>
                 </InfoContent>
               </InfoItem>
             </ContactInfo>
@@ -478,17 +454,12 @@ const InfoLabel = styled.h4`
   letter-spacing: 0.5px;
 `;
 
-const InfoValue = styled.a`
+const InfoValue = styled.div`
   display: block;
   font-size: ${({ theme }) => theme.fontSizes.base};
   font-weight: ${({ theme }) => theme.fontWeights.medium};
   color: ${({ theme }) => theme.colors.textPrimary};
-  text-decoration: none;
   margin-bottom: ${({ theme }) => theme.spacing[1]};
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.primary};
-  }
 `;
 
 const InfoDescription = styled.p`

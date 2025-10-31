@@ -9,12 +9,12 @@ import { useToast } from "../../hooks/use-toast";
 import { contactAPI } from "../../services/api";
 
 const contactInfo = [
-  {
-    icon: Phone,
-    title: "Phone",
-    detail: "+91 88228 82264",
-    description: "Mon-Sun, 6:00 AM - 10:00 PM"
-  },
+  // {
+  //   icon: Phone,
+  //   title: "Phone",
+  //   detail: "+91 88228 82264",
+  //   description: "Mon-Sun, 6:00 AM - 10:00 PM"
+  // },
   {
     icon: Mail,
     title: "Email",
