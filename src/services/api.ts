@@ -270,6 +270,17 @@ export const streamingAPI = {
   getStreamingStats: () => api.get("/streaming/stats"),
 };
 
+export const contactAPI = {
+  createContact: (contactData: {
+    name: string;
+    email: string;
+    phone?: string;
+    subject: string;
+    message: string;
+    type?: "GENERAL" | "SUPPORT" | "PARTNERSHIP" | "FEEDBACK" | "COMPLAINT";
+  }) => api.post("/contact", contactData),
+};
+
 export const adminAPI = {
   getDashboardStats: () => api.get("/admin/dashboard/stats"),
   getUsers: (params?: any) => api.get("/admin/users", { params }),
@@ -290,6 +301,10 @@ export const adminAPI = {
   deleteService: (serviceId: string) => api.delete(`/services/${serviceId}`),
   getServiceStats: () => api.get("/admin/services/stats"),
   getAnalytics: () => api.get("/admin/analytics"),
+  getContacts: (params?: any) => api.get("/contact", { params }),
+  getContact: (contactId: string) => api.get(`/contact/${contactId}`),
+  updateContactStatus: (contactId: string, statusData: { status: string; adminNotes?: string }) =>
+    api.put(`/contact/${contactId}/status`, statusData),
 };
 
 export default api;

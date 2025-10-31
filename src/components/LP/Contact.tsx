@@ -6,6 +6,7 @@ import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Phone, Mail, MapPin, Clock, Send, Building } from "lucide-react";
 import { useToast } from "../../hooks/use-toast";
+import { contactAPI } from "../../services/api";
 
 const contactInfo = [
   {
@@ -44,30 +45,66 @@ export default function Contact() {
     message: "",
     type: "general" // general, partnership, support
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Contact form submitted:", formData);
-    // todo: remove mock functionality - replace with actual contact API
+    setIsSubmitting(true);
     
-    toast({
-      title: "Message Sent Successfully!",
-      description: "Thank you for contacting us. We'll get back to you soon.",
-    });
-    
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      subject: "",
-      message: "",
-      type: "general"
-    });
+    try {
+      // Map frontend type to backend type
+      const typeMap: Record<string, "GENERAL" | "SUPPORT" | "PARTNERSHIP" | "FEEDBACK" | "COMPLAINT"> = {
+        general: "GENERAL",
+        support: "SUPPORT",
+        partnership: "PARTNERSHIP",
+        feedback: "FEEDBACK",
+        complaint: "COMPLAINT",
+      };
+
+      const contactData = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || undefined,
+        subject: formData.subject,
+        message: formData.message,
+        type: typeMap[formData.type] || "GENERAL",
+      };
+
+      // Single endpoint - works for anyone, authenticated or not
+      const response = await contactAPI.createContact(contactData);
+
+      if (response.data.success) {
+        toast({
+          title: "Message Sent Successfully!",
+          description: "Thank you for contacting us. We'll get back to you soon.",
+        });
+        
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          message: "",
+          type: "general"
+        });
+      }
+    } catch (error: any) {
+      console.error("Contact form submission error:", error);
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || 
+                    error.response?.data?.error || 
+                    "Failed to submit contact form. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -208,9 +245,15 @@ export default function Contact() {
                     />
                   </div>
 
-                  <Button type="submit" size="lg" className="w-full" data-testid="button-contact-submit">
+                  <Button 
+                    type="submit" 
+                    size="lg" 
+                    className="w-full" 
+                    data-testid="button-contact-submit"
+                    disabled={isSubmitting}
+                  >
                     <Send className="w-4 h-4 mr-2" />
-                    Send Message
+                    {isSubmitting ? "Sending..." : "Send Message"}
                   </Button>
                 </form>
               </CardContent>

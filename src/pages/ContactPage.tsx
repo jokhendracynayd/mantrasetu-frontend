@@ -15,6 +15,7 @@ import {
 } from 'react-icons/fa';
 import Button from '../components/Common/Button';
 import Input from '../components/Common/Input';
+import { contactAPI } from '../services/api';
 
 interface ContactFormData {
   name: string;
@@ -38,6 +39,8 @@ const ContactPage: React.FC = () => {
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
 
   const faqData: FAQItem[] = [
@@ -74,19 +77,44 @@ const ContactPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(false);
     
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      const contactData = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || undefined,
+        subject: formData.subject,
+        message: formData.message,
+        type: 'GENERAL' as const,
+      };
+
+      // Single endpoint - works for both authenticated and non-authenticated users
+      const response = await contactAPI.createContact(contactData);
+
+      if (response.data.success) {
+        setSubmitSuccess(true);
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: ''
+        });
+        // Auto-hide success message after 5 seconds
+        setTimeout(() => setSubmitSuccess(false), 5000);
+      }
+    } catch (error: any) {
+      console.error('Contact form submission error:', error);
+      setSubmitError(
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        'Failed to submit contact form. Please try again later.'
+      );
+    } finally {
       setIsSubmitting(false);
-      alert('Thank you for your message! We will get back to you within 24 hours.');
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: ''
-      });
-    }, 2000);
+    }
   };
 
   const toggleFAQ = (index: number) => {
@@ -159,6 +187,14 @@ const ContactPage: React.FC = () => {
                   required
                 />
               </MessageField>
+              {submitError && (
+                <ErrorMessage>{submitError}</ErrorMessage>
+              )}
+              {submitSuccess && (
+                <SuccessMessage>
+                  Thank you for your message! We will get back to you within 24 hours.
+                </SuccessMessage>
+              )}
               <Button 
                 type="submit" 
                 variant="primary" 
@@ -581,6 +617,26 @@ const FAQAnswer = styled.div`
       max-height: 200px;
     }
   }
+`;
+
+const ErrorMessage = styled.div`
+  padding: ${({ theme }) => theme.spacing[3]} ${({ theme }) => theme.spacing[4]};
+  background: #fee;
+  color: #c33;
+  border: 1px solid #fcc;
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  margin-bottom: ${({ theme }) => theme.spacing[4]};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+`;
+
+const SuccessMessage = styled.div`
+  padding: ${({ theme }) => theme.spacing[3]} ${({ theme }) => theme.spacing[4]};
+  background: #efe;
+  color: #3c3;
+  border: 1px solid #cfc;
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  margin-bottom: ${({ theme }) => theme.spacing[4]};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
 `;
 
 export default ContactPage;
