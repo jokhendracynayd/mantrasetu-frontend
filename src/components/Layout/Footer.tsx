@@ -18,8 +18,8 @@ const footerSections = [
   {
     title: "Spiritual Tools",
     links: [
-      { label: "Panchang", href: "#" },
-      { label: "Muhurat Finder", href: "#" },
+      { label: "Panchang", href: "/panchang" },
+      { label: "Muhurat Finder", href: "/muhurat" },
       { label: "Rashifal", href: "#" },
       { label: "Kundali Creation", href: "#" }
     ]
@@ -28,7 +28,7 @@ const footerSections = [
     title: "Company",
     links: [
       { label: "About Us", href: "#about" },
-      { label: "Our Mission", href: "#" },
+      { label: "Our Mission", href: "#about" },
       { label: "Partner with Us", href: "#" },
       { label: "Careers", href: "#" }
     ]
@@ -36,7 +36,7 @@ const footerSections = [
   {
     title: "Support",
     links: [
-      { label: "Help Center", href: "#" },
+      { label: "Help Center", href: "/contact" },
       { label: "Contact Us", href: "#contact" },
       { label: "Privacy Policy", href: "#" },
       { label: "Terms of Service", href: "#" }

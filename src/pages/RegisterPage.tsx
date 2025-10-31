@@ -362,7 +362,7 @@ const RegisterPage: React.FC = () => {
               🕉️ Register as Pandit Ji
             </Button>
 
-            <Button
+            {/* <Button
               type="button"
               variant="outline"
               onClick={handleGoogleRegister}
@@ -372,7 +372,7 @@ const RegisterPage: React.FC = () => {
                 G
               </div>
               Sign up with Google
-            </Button>
+            </Button> */}
 
             {/* Login Link */}
             <p className="text-center text-sm text-muted-foreground pt-2">
