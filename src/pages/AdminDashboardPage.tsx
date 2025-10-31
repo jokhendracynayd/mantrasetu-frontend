@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import type { RootState, AppDispatch } from '../store/store';
@@ -9,6 +10,7 @@ import LoadingSpinner from '../components/Common/LoadingSpinner';
 
 const AdminDashboardPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
   const { bookings, isLoading } = useSelector((state: RootState) => state.booking);
 
@@ -120,17 +122,22 @@ const AdminDashboardPage: React.FC = () => {
               <CardContent>
                 <ActionList>
                   <ActionItem>
-                    <Button variant="primary" size="small" fullWidth>
+                    <Button variant="primary" size="small" fullWidth onClick={() => navigate('/admin/users')}>
                       Manage Users
                     </Button>
                   </ActionItem>
                   <ActionItem>
-                    <Button variant="outline" size="small" fullWidth>
+                    <Button variant="outline" size="small" fullWidth onClick={() => navigate('/admin/pandits')}>
                       Manage Pandits
                     </Button>
                   </ActionItem>
                   <ActionItem>
-                    <Button variant="outline" size="small" fullWidth>
+                    <Button variant="outline" size="small" fullWidth onClick={() => navigate('/admin/services')}>
+                      Manage Services
+                    </Button>
+                  </ActionItem>
+                  <ActionItem>
+                    <Button variant="outline" size="small" fullWidth onClick={() => navigate('/admin/analytics')}>
                       View Analytics
                     </Button>
                   </ActionItem>
